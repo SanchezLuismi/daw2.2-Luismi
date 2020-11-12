@@ -3,7 +3,14 @@
 
     $conexion = obtenerPdoConexionBD();
 
-    $sql = "
+    if (!isset($_REQUEST["pEstrella"])){
+        $estrella = false;
+    } else{
+        $estrella = true;
+        echo $estrella;
+    }
+
+        $sql = "
                SELECT
                     p.id     AS pId,
                     p.nombre AS pNombre,
@@ -21,6 +28,9 @@
         $select = $conexion->prepare($sql);
         $select->execute([]); // Array vacío porque la consulta preparada no requiere parámetros.
         $rs = $select->fetchAll();
+
+
+
 
 /* */
     // INTERFAZ:
@@ -47,20 +57,32 @@
             <th>Categoria</th>
         </tr>
 
-        <?php foreach ($rs as $fila) { ?>
+        <?php foreach ($rs as $fila) {?>
             <tr>
                 <?php
+                if($estrella){
                     if($fila["pEstrella"] == "1"){?>
-                <td><img src="/agenda/img/estrellaRellena.png" width="20" height="20"></td>
-                    <?php
-                    }else{?>
-                <td><img src="/agenda/img/estrellaVacia.png"  width="20" height="20"></td>
+                        <td><a href='personaFicha.php?id=<?=$fila["pId"]?>'> <?=$fila["pNombre"] . " " .$fila["pApellidos"]?> </a></td>
+                        <td><a href=  'categoriaFicha.php?id=<?=$fila["cId"]?>'> <?=$fila["cNombre"] ?></a></td>
+                        <td><a href='personaEliminar.php?id=<?=$fila["pId"]?>'> (X)                   </a></td>
+                        <?php
+                    }
+                } else{
+                        if($fila["pEstrella"] == "1"){?>
+                            <td><img src="/agenda/img/estrellaRellena.png" width="20" height="20"></td>
+                        <?php
+                        }else{?>
+                            <td><img src="/agenda/img/estrellaVacia.png"  width="20" height="20"></td>
+                        <?php
+                        }?>
+                            <td><a href='personaFicha.php?id=<?=$fila["pId"]?>'> <?=$fila["pNombre"] . " " .$fila["pApellidos"]?> </a></td>
+                            <td><a href=  'categoriaFicha.php?id=<?=$fila["cId"]?>'> <?=$fila["cNombre"] ?></a></td>
+                            <td><a href='personaEliminar.php?id=<?=$fila["pId"]?>'> (X)                   </a></td>
                 <?php
                     }
-                ?>
-                <td><a href='personaFicha.php?id=<?=$fila["pId"]?>'> <?=$fila["pNombre"] . " " .$fila["pApellidos"]?> </a></td>
-                <td><a href=  'categoriaFicha.php?id=<?=$fila["cId"]?>'> <?=$fila["cNombre"] ?></a></td>
-                <td><a href='personaEliminar.php?id=<?=$fila["pId"]?>'> (X)                   </a></td>
+                    ?>
+
+
             </tr>
         <?php } ?>
 
@@ -75,7 +97,16 @@
 
     <a href='categoriaListado.php'>Gestionar listado de Categorias</a>
     <br />
-    <a href='personaEstablecerEstadoEstrella.php'>Gestionar listado de personas con estrella</a>
+    <?php
+        if($estrella){?>
+            <a href='personaListado.php'>Gestionar listado de personas</a>
+       <?php
+        }else{?>
+            <a href='personaListado.php?pEstrella=1'>Gestionar listado de personas con estrella</a>
+       <?php
+        }
+    ?>
+
 
 </body>
 
