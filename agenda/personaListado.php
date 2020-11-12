@@ -7,7 +7,6 @@
         $estrella = false;
     } else{
         $estrella = true;
-        echo $estrella;
     }
 
         $sql = "
