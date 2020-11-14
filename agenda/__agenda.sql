@@ -58,11 +58,11 @@ INSERT INTO `categoria` (`id`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `persona`
 --
 
-DROP TABLE IF EXISTS `persona`;
-CREATE TABLE IF NOT EXISTS `persona` (
+DROP TABLE IF EXISTS `plato`;
+CREATE TABLE IF NOT EXISTS `plato` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  `apellidos` varchar(60) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `precio` Decimal(3,2) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
   `telefono` varchar(15) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
   `categoria_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
