@@ -28,13 +28,12 @@
                SELECT
                     p.id     AS pId,
                     p.nombre AS pNombre,
-                    p.apellidos as pApellidos,
-                    p.telefono as pTelefono,
+                    p.precio as pPrecio,
                     p.estrella as pEstrella,
                     c.id     AS cId,
                     c.nombre AS cNombre
                 FROM
-                   persona AS p INNER JOIN categoria AS c
+                   plato AS p INNER JOIN categoria AS c
                    ON p.categoriaId = c.id
                 ORDER BY p.nombre
         ";
@@ -83,7 +82,7 @@
         <?php
         foreach ($rs1 as $fila){
             if($categoriaId == $fila["cId"]){?>
-                <li><?=$fila["pNombre"] .' ' . $fila["pApellidos"] ?></li>
+                <li><?='Nombre: ' . $fila["pNombre"] .' Precio:' . $fila["pPrecio"] ?></li>
            <?php
             }
             ?>
