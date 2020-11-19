@@ -67,10 +67,10 @@ $rs = $select->fetchAll();
                     }
                 } else{
             if($fila["pEstrella"] == "1"){?>
-                <td><a href='platoEstablecerEstadoEstrella.php?id=<?=$fila["pId"]?>'><img src="/bar/img/estrellaRellena.png"  width="20" height="20"></a></td>
+                <td><a href='platoEstablecerEstadoEstrella.php?id=<?=$fila["pId"]?>'><img src="/agenda/img/estrellaRellena.png"  width="20" height="20"></a></td>
                 <?php
             }else{?>
-                <td><a href='platoEstablecerEstadoEstrella.php?id=<?=$fila["pId"]?>'><img src="/bar/img/estrellaVacia.png"  width="20" height="20"></a></td>
+                <td><a href='platoEstablecerEstadoEstrella.php?id=<?=$fila["pId"]?>'><img src="/CartaBar/img/estrellaVacia.png"  width="20" height="20"></a></td>
                 <?php
             }?>
         <td><a href='platoFicha.php?id=<?=$fila["pId"]?>'> <?=$fila["pNombre"]?> </a></td>

@@ -62,7 +62,6 @@
             <tr>
                 <?php
                 if($estrella){?>
-                    <td><a href="personaEstablecerEstadoEstrella.php?estrella=<?=$fila["pEstrella"]?>&id=<?=$fila["pId"]?>"><img src="img/estrellaRellena.png" width="20" height="20"></a></td>
                     <td><a href='personaFicha.php?id=<?=$fila["pId"]?>'> <?=$fila["pNombre"] . " " .$fila["pApellidos"]?> </a></td>
                     <td><a href=  'categoriaFicha.php?id=<?=$fila["cId"]?>'> <?=$fila["cNombre"] ?></a></td>
                     <td><a href='personaEliminar.php?id=<?=$fila["pId"]?>'> (X)                   </a></td>
