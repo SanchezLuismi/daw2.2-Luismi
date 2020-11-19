@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS `plato` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
   `precio` Decimal(3,2) NOT NULL,
+  `estrella` tinyint(1) NOT NULL DEFAULT 0,
   `categoria_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_categoria_id_idx` (`categoria_id`)
@@ -61,13 +62,13 @@ CREATE TABLE IF NOT EXISTS `plato` (
 -- Volcado de datos para la tabla `plato`
 --
 
-INSERT INTO `plato` (`id`, `nombre`,`precio`, `categoria_id`) VALUES
-(1, 'Oreja', 6.50, 1),
+INSERT INTO `plato` (`id`,`nombre`,`precio`,`estrella`,`categoria_id`) VALUES
+(1, 'Oreja', 6.50,0, 1),
 (2, 'Lomo con queso', 3.50, 2),
-(3, 'Jamon', 6.50, 1)),
-(4, 'Hamburguesa de pollo', 4.50, 3),
-(5, 'Hambuerguesa de vacuno', 5.50, 3),
-(6, 'Aceitunas', 2.50, 4),
+(3, 'Jamon', 6.50,1, 1),
+(4, 'Hamburguesa de pollo', 4.50,1, 3),
+(5, 'Hambuerguesa de vacuno', 5.50,0,3),
+(6, 'Aceitunas', 2.50,1, 4);
 
 --
 -- Restricciones para tablas volcadas

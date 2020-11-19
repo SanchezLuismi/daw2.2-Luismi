@@ -4,7 +4,7 @@
 	function obtenerPdoConexionBD(): PDO
 	{
 		$servidor = "localhost";
-		$bd = "bar1";
+		$bd = "bar";
 		$identificador = "root";
 		$contrasenna = "";
         $opciones = [

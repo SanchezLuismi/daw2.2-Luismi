@@ -69,10 +69,11 @@
                     <?php
                 } else{
                         if($fila["pEstrella"] == "1"){?>
-                            <td><a href="personaEstablecerEstadoEstrella.php?estrella=<?=$fila["pEstrella"]?>&id=<?=$fila["pId"]?>"><img src="img/estrellaRellena.png" width="20" height="20"></a></td>
+                            <td><a href='personaEstablecerEstadoEstrella.php?id=<?=$fila["pId"]?>'><img src="/agenda/img/estrellaRellena.png"  width="20" height="20"></a></td>
                         <?php
                         }else{?>
-                            <td><a href="personaEstablecerEstadoEstrella.php?estrella=<?=$fila["pEstrella"]?>&id=<?=$fila["pId"]?>"><img src="img/estrellaVacia.png" width="20" height="20"></a></td>
+
+                            <td><a href='personaEstablecerEstadoEstrella.php?id=<?=$fila["pId"]?>'><img src="/agenda/img/estrellaVacia.png"  width="20" height="20"></a></td>
                         <?php
                         }?>
                     <td><a href='personaFicha.php?id=<?=$fila["pId"]?>'> <?=$fila["pNombre"] . " " .$fila["pApellidos"]?> </a></td>
