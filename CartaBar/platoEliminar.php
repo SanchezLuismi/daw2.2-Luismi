@@ -35,17 +35,17 @@
     <?php if ($correctoNormal) { ?>
 
         <h1>Eliminación completada</h1>
-        <p>Se ha eliminado correctamente la persona.</p>
+        <p>Se ha eliminado correctamente el plato.</p>
 
     <?php } else if ($noExistia) { ?>
 
         <h1>Eliminación no realizada</h1>
-        <p>No existe la persona que se pretende eliminar (quizá la eliminaron en paraleo o, ¿ha manipulado Vd. el parámetro id?).</p>
+        <p>No existe el plato que se pretende eliminar (quizá la eliminaron en paraleo o, ¿ha manipulado Vd. el parámetro id?).</p>
 
     <?php } else { ?>
 
         <h1>Error en la eliminación</h1>
-        <p>No se ha podido eliminar la persona.</p>
+        <p>No se ha podido eliminar el plato.</p>
 
     <?php } ?>
 

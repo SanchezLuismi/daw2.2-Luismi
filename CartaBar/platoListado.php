@@ -52,6 +52,7 @@ $rs = $select->fetchAll();
     <tr>
         <th>Estrella</th>
         <th>Nombre</th>
+        <th>Precio</th>
         <th>Categoria</th>
     </tr>
 
@@ -61,6 +62,7 @@ $rs = $select->fetchAll();
         if($estrella){
             if($fila["pEstrella"] == "1"){?>
                 <td><a href='platoFicha.php?id=<?=$fila["pId"]?>'> <?=$fila["pNombre"]?> </a></td>
+                <td><?=$fila["pPrecio"]?> €</td>
                 <td><a href=  'categoriaFicha.php?id=<?=$fila["cId"]?>'> <?=$fila["cNombre"] ?></a></td>
                 <td><a href='platoEliminar.php?id=<?=$fila["pId"]?>'> (X)                   </a></td>
                 <?php
@@ -73,9 +75,10 @@ $rs = $select->fetchAll();
                 <td><a href='platoEstablecerEstadoEstrella.php?id=<?=$fila["pId"]?>'><img src="img/estrellaVacia.png"  width="20" height="20"></a></td>
                 <?php
             }?>
-        <td><a href='platoFicha.php?id=<?=$fila["pId"]?>'> <?=$fila["pNombre"]?> </a></td>
-        <td><a href=  'categoriaFicha.php?id=<?=$fila["cId"]?>'> <?=$fila["cNombre"] ?></a></td>
-        <td><a href='platoEliminar.php?id=<?=$fila["pId"]?>'> (X)                   </a></td>
+            <td><a href='platoFicha.php?id=<?=$fila["pId"]?>'> <?=$fila["pNombre"]?> </a></td>
+            <td> <?=$fila["pPrecio"]?> €</td>
+            <td><a href=  'categoriaFicha.php?id=<?=$fila["cId"]?>'> <?=$fila["cNombre"] ?></a></td>
+            <td><a href='platoEliminar.php?id=<?=$fila["pId"]?>'> (X)                   </a></td>
     <?php
     }
     ?>

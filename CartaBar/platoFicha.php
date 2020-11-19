@@ -13,7 +13,8 @@ $nuevaEntrada = ($id == -1);
 
 if ($nuevaEntrada) { // Quieren CREAR una nueva entrada, así que no se cargan datos.
     $platoNombre = "<introduzca nombre>";
-    $precio="<introduzca precio>";
+    $platoPrecio="<introduzca precio>";
+    $estrella = false;
 
 } else { // Quieren VER la ficha de una categoría existente, cuyos datos se cargan.
     $sql = "SELECT * FROM plato WHERE id=?";
@@ -26,6 +27,12 @@ if ($nuevaEntrada) { // Quieren CREAR una nueva entrada, así que no se cargan d
     $platoNombre = $rs[0]["nombre"];
     $platoPrecio = $rs[0]["precio"];
     $platoCategoria = $rs[0]["categoriaId"];
+    $platoEstrella = $rs[0]["estrella"];
+    if($platoEstrella == "1"){
+        $estrella = true;
+    }else{
+        $estrella = false;
+    }
 
 }
 $sql = "SELECT * FROM categoria";
@@ -47,12 +54,12 @@ $rs1 = $select->fetchAll();
 
 <body>
 <?php if ($nuevaEntrada) { ?>
-    <h1>Nueva ficha de Persona</h1>
+    <h1>Nueva ficha de plato</h1>
 <?php } else { ?>
-    <h1>Ficha de persona</h1>
+    <h1>Ficha de plato</h1>
 <?php } ?>
 
-<form method='post' action='personaGuardar.php'>
+<form method='post' action='platoGuardar.php'>
 
     <input type='hidden' name='id' value='<?=$id?>' />
 
@@ -62,8 +69,8 @@ $rs1 = $select->fetchAll();
             <input type='text' name='nombre' value='<?=$platoNombre?>' />
         </li>
         <li>
-            <strong>Apellidos: </strong>
-            <input type='number' name='apellidos' value='<?=$platoPrecio?>' />
+            <strong>Precio: </strong>
+            <input type='text' name='precio'/>
         </li>
         <li>
             <strong>Categoria: </strong>
@@ -80,11 +87,22 @@ $rs1 = $select->fetchAll();
                 ?>
             </select>
         </li>
+        <li>
+            <strong>Estrella: </strong>
+            <?php
+            switch ($estrella){
+                case true: echo '<input type="checkbox" name="estrella" value="1" checked/>';
+                    break;
+                case false:echo '<input type="checkbox" name="estrella" value="1"/>';
+            }
+            ?>
+
+        </li>
 
     </ul>
 
     <?php if ($nuevaEntrada) { ?>
-        <input type='submit' name='crear' value='Crear persona' />
+        <input type='submit' name='crear' value='Crear plato' />
     <?php } else { ?>
         <input type='submit' name='guardar' value='Guardar cambios' />
     <?php } ?>

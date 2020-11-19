@@ -8,6 +8,7 @@ $id = (int)$_REQUEST["id"];
 $nombre = $_REQUEST["nombre"];
 $categoria =(int) $_REQUEST["categoria"];
 $precio = $_REQUEST["precio"];
+$estrella = $_REQUEST["estrella"];
 
 // Si id es -1 quieren CREAR una nueva entrada ($nueva_entrada tomará true).
 // Sin embargo, si id NO es -1 quieren VER la ficha de una categoría existente
@@ -16,12 +17,12 @@ $nuevaEntrada = ($id == -1);
 
 if ($nuevaEntrada) {
     // Quieren CREAR una nueva entrada, así que es un INSERT.
-    $sql = "INSERT INTO plato (nombre,precio,categoriaId) VALUES (?,?,?)";
-    $parametros = [$nombre,$precio,$categoria];
+    $sql = "INSERT INTO plato (nombre,precio,estrella,categoria_id) VALUES (?,?,?,?)";
+    $parametros = [$nombre,$precio,$estrella,$categoria];
 } else {
     // Quieren MODIFICAR una categoría existente y es un UPDATE.
-    $sql = "UPDATE persona SET nombre=?,precio=?,categoriaId=? WHERE id=?";
-    $parametros = [$nombre,$precio,$categoria,$id];
+    $sql = "UPDATE persona SET nombre=?,precio=?,estrella=?,categoria_id=? WHERE id=?";
+    $parametros = [$nombre,$precio,$estrella ,$categoria,$id];
 }
 
 $sentencia = $conexionBD->prepare($sql);
@@ -67,17 +68,17 @@ if ($correcto || $datosNoModificados) { ?>
 
     <?php if ($nuevaEntrada) { ?>
         <h1>Error en la creación.</h1>
-        <p>No se ha podido crear la nueva persona.</p>
+        <p>No se ha podido crear el nuevo plato.</p>
     <?php } else { ?>
         <h1>Error en la modificación.</h1>
-        <p>No se han podido guardar los datos de la persona.</p>
+        <p>No se han podido guardar los datos de la plato.</p>
     <?php } ?>
 
     <?php
 }
 ?>
 
-<a href='platoListado.php'>Volver al listado de personas.</a>
+<a href='platoListado.php'>Volver al listado de plato.</a>
 
 </body>
 
