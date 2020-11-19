@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `plato` (
 
 INSERT INTO `plato` (`id`,`nombre`,`precio`,`estrella`,`categoria_id`) VALUES
 (1, 'Oreja', 6.50,0, 1),
-(2, 'Lomo con queso', 3.50, 2),
+(2, 'Lomo con queso', 3.50,0, 2),
 (3, 'Jamon', 6.50,1, 1),
 (4, 'Hamburguesa de pollo', 4.50,1, 3),
 (5, 'Hambuerguesa de vacuno', 5.50,0,3),
