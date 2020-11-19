@@ -34,7 +34,7 @@
                     c.nombre AS cNombre
                 FROM
                    plato AS p INNER JOIN categoria AS c
-                   ON p.categoriaId = c.id
+                   ON p.categoria_id = c.id
                 ORDER BY p.nombre
         ";
 

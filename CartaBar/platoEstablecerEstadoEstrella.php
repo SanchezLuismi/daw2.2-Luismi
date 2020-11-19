@@ -5,7 +5,7 @@ $conexion = obtenerPdoConexionBD();
 
 $id = $_REQUEST["id"];
 
-$sql = "UPDATE plato SET estrella = (NOT (SELECT estrella FROM persona WHERE id=?)) WHERE id=?";
+$sql = "UPDATE plato SET estrella = (NOT (SELECT estrella FROM plato WHERE id=?)) WHERE id=?";
 $sentencia = $conexion->prepare($sql);
 $sentencia->execute([$id, $id]);
 redireccionar("platoListado.php");
