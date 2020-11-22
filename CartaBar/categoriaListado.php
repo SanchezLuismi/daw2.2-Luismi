@@ -51,7 +51,11 @@
 <br />
 <br />
 
-<a href='platoListado.php'>Gestionar listado de Platos</a>
+<a href='platoListado.php'>Gestionar listado de platos</a>
+<br />
+<a href='barListado.php'>Gestionar listado de bares</a>
+<br />
+
 
 </body>
 

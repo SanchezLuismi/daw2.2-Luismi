@@ -4,7 +4,7 @@
 	function obtenerPdoConexionBD(): PDO
 	{
 		$servidor = "localhost";
-		$bd = "bar";
+		$bd = "CartaBares";
 		$identificador = "root";
 		$contrasenna = "";
         $opciones = [

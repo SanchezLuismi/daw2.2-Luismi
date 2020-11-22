@@ -29,18 +29,24 @@
                     p.id     AS pId,
                     p.nombre AS pNombre,
                     p.precio as pPrecio,
-                    p.estrella as pEstrella,
+                    p.barId as pBarId,
                     c.id     AS cId,
                     c.nombre AS cNombre
                 FROM
                    plato AS p INNER JOIN categoria AS c
-                   ON p.categoria_id = c.id
+                   ON p.categoriaId = c.id
                 ORDER BY p.nombre
         ";
 
         $select = $conexion->prepare($sql1);
         $select->execute([]); // Se añade el parámetro a la consulta preparada.
         $rs1 = $select->fetchAll();
+
+        $sql2 = "SELECT * FROM lugar";
+
+        $select = $conexion->prepare($sql2);
+        $select->execute([]); // Se añade el parámetro a la consulta preparada.
+        $rs2 = $select->fetchAll();
 	}
 
 
@@ -77,20 +83,30 @@
 		<strong>Nombre: </strong>
 		<input type='text' name='nombre' value='<?=$categoriaNombre?>' />
 	</li>
-    <li><strong>Personas que pertenecen a esta categoria:</strong>
+    <?php
+
+    if ($nuevaEntrada) { ?>
+    <?php }else{ ?>
+    <li><strong>Plato que pertenecen a esta categoria:</strong>
         <ul>
-        <?php
-        foreach ($rs1 as $fila){
-            if($categoriaId == $fila["cId"]){?>
-                <li><?='Nombre: ' . $fila["pNombre"] .' Precio:' . $fila["pPrecio"] ?></li>
-           <?php
+            <?php
+            foreach ($rs1 as $fila){
+                if($categoriaId == $fila["cId"]){?>
+                    <?php
+                    foreach ($rs2 as $linea){
+                        if($fila["pBarId"] == $linea["id"]){?>
+                            <li><?='Nombre: ' . $fila["pNombre"] .' Precio: ' . $fila["pPrecio"]  . ' Bar: ' . $linea["nombre"]?></li>
+                            <?php
+                        }
+                    }
+                }
             }
             ?>
-
-        <?php  }
-        ?>
         </ul>
     </li>
+    <?php
+    }
+    ?>
 </ul>
 
 <?php if ($nuevaEntrada) { ?>

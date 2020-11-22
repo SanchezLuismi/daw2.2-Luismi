@@ -6,15 +6,6 @@ $conexionBD = obtenerPdoConexionBD();
 // Se recogen los datos del formulario de la request.
 $id = (int)$_REQUEST["id"];
 $nombre = $_REQUEST["nombre"];
-$categoria =(int) $_REQUEST["categoria"];
-$bar =(int) $_REQUEST["bar"];
-$precio = $_REQUEST["precio"];
-if (!isset($_REQUEST["estrella"])){
-    $estrella = "0";
-} else{
-    $estrella = $_REQUEST["estrella"];
-}
-
 
 // Si id es -1 quieren CREAR una nueva entrada ($nueva_entrada tomará true).
 // Sin embargo, si id NO es -1 quieren VER la ficha de una categoría existente
@@ -23,12 +14,12 @@ $nuevaEntrada = ($id == -1);
 
 if ($nuevaEntrada) {
     // Quieren CREAR una nueva entrada, así que es un INSERT.
-    $sql = "INSERT INTO plato (nombre,precio,estrellaP,categoriaId,barId) VALUES (?,?,?,?,?)";
-    $parametros = [$nombre,$precio,$estrella,$categoria,$bar];
+    $sql = "INSERT INTO lugar (nombre) VALUES (?)";
+    $parametros = [$nombre];
 } else {
     // Quieren MODIFICAR una categoría existente y es un UPDATE.
-    $sql = "UPDATE plato SET nombre=?,precio=?,estrellaP=?,categoriaId=?,barId=? WHERE id=?";
-    $parametros = [$nombre,$precio,$estrella ,$categoria,$bar,$id];
+    $sql = "UPDATE lugar SET nombre=? WHERE id=?";
+    $parametros = [$nombre,$id];
 }
 
 $sentencia = $conexionBD->prepare($sql);
@@ -74,17 +65,17 @@ if ($correcto || $datosNoModificados) { ?>
 
     <?php if ($nuevaEntrada) { ?>
         <h1>Error en la creación.</h1>
-        <p>No se ha podido crear el nuevo plato.</p>
+        <p>No se ha podido crear el nuevo bar.</p>
     <?php } else { ?>
         <h1>Error en la modificación.</h1>
-        <p>No se han podido guardar los datos de la plato.</p>
+        <p>No se han podido guardar los datos de la bar.</p>
     <?php } ?>
 
     <?php
 }
 ?>
 
-<a href='platoListado.php'>Volver al listado de plato.</a>
+<a href='barListado.php'>Volver al listado de bares.</a>
 
 </body>
 

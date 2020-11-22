@@ -27,7 +27,8 @@ if ($nuevaEntrada) { // Quieren CREAR una nueva entrada, así que no se cargan d
     $platoNombre = $rs[0]["nombre"];
     $platoPrecio = $rs[0]["precio"];
     $platoCategoria = $rs[0]["categoriaId"];
-    $platoEstrella = $rs[0]["estrella"];
+    $platoBar = $rs[0]["barId"];
+    $platoEstrella = $rs[0]["estrellaP"];
     if($platoEstrella == "1"){
         $estrella = true;
     }else{
@@ -40,6 +41,12 @@ $sql = "SELECT * FROM categoria";
 $select = $conexion->prepare($sql);
 $select->execute([]); // Se añade el parámetro a la consulta preparada.
 $rs1 = $select->fetchAll();
+
+$sql2 = "SELECT * FROM lugar";
+
+$select = $conexion->prepare($sql2);
+$select->execute([]); // Se añade el parámetro a la consulta preparada.
+$rs2 = $select->fetchAll();
 ?>
 
 
@@ -70,7 +77,7 @@ $rs1 = $select->fetchAll();
         </li>
         <li>
             <strong>Precio: </strong>
-            <input type='text' name='precio'/>
+            <input type='text' name='precio' value='<?=$platoPrecio?>'/>
         </li>
         <li>
             <strong>Categoria: </strong>
@@ -78,6 +85,21 @@ $rs1 = $select->fetchAll();
                 <?php
                 foreach ($rs1 as $fila){
                     if(intval($platoCategoria) == intval($fila["id"])){?>
+                        <option value=<?=$fila["id"]?> selected><?=$fila["nombre"]?></option>
+                        <?php
+                    }else{?>
+                        <option value=<?=$fila["id"]?>><?=$fila["nombre"]?></option>
+                    <?php  }
+                }
+                ?>
+            </select>
+        </li>
+        <li>
+            <strong>Bar: </strong>
+            <select name="bar">
+                <?php
+                foreach ($rs2 as $fila){
+                    if(intval($platoBar) == intval($fila["id"])){?>
                         <option value=<?=$fila["id"]?> selected><?=$fila["nombre"]?></option>
                         <?php
                     }else{?>

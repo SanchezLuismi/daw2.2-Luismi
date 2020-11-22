@@ -6,7 +6,7 @@
     // Se recoge el parámetro "id" de la request.
     $id = (int)$_REQUEST["id"];
 
-    $sql = "DELETE FROM plato WHERE id=?";
+    $sql = "DELETE FROM lugar WHERE id=?";
 
     $sentencia = $conexionBD->prepare($sql);
     //Esta llamada devuelve true o false según si la ejecución de la sentencia ha ido bien o mal.
@@ -35,7 +35,7 @@
     <?php if ($correctoNormal) { ?>
 
         <h1>Eliminación completada</h1>
-        <p>Se ha eliminado correctamente el plato.</p>
+        <p>Se ha eliminado correctamente el bar.</p>
 
     <?php } else if ($noExistia) { ?>
 
@@ -45,11 +45,11 @@
     <?php } else { ?>
 
         <h1>Error en la eliminación</h1>
-        <p>No se ha podido eliminar el plato.</p>
+        <p>No se ha podido eliminar el bar.</p>
 
     <?php } ?>
 
-    <a href='platoListado.php'>Volver al listado de platos.</a>
+    <a href='barListado.php'>Volver al listado de bares.</a>
 
 </body>
 
