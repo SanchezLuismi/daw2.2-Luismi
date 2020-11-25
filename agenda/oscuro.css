@@ -1,0 +1,21 @@
+body{
+    background: grey;
+    color: white;
+}
+
+.claro{
+    color : white;
+}
+
+.oscuro{
+    text-decoration: underline;
+    color : white;
+}
+
+table{
+    border:1px white;
+}
+
+a{
+    color: white;
+}

@@ -1,0 +1,16 @@
+body{
+    background: white;
+    color: black;
+}
+.claro{
+    text-decoration: underline;
+    color : black;
+}
+
+.oscuro{
+    color : black;
+}
+
+a{
+    color: black;
+}

@@ -3,13 +3,22 @@
 
     $conexion = obtenerPdoConexionBD();
 
-    if (!isset($_REQUEST["pEstrella"])){
-        $estrella = false;
-        $condicion="";
-    } else{
-        $estrella = true;
-        $condicion="WHERE p.estrella=1";
-    }
+session_start(); // Crear post-it vacío, o recuperar el que ya haya  (vacío o con cosas).
+if (isset($_REQUEST["soloEstrellas"])) {
+    $_SESSION["soloEstrellas"] = true;
+    $estrella = true;
+}
+if (isset($_REQUEST["todos"])) {
+    unset($_SESSION["soloEstrellas"]);
+    $estrella=false;
+}
+
+if (!isset($_REQUEST["tema"]) && !isset($_SESSION["tema"])) {
+    $_SESSION["tema"]=0;
+}else  if (isset($_REQUEST["tema"])) {
+    $_SESSION["tema"]=$_REQUEST["tema"];
+}
+$posibleClausulaWhere = isset($_SESSION["soloEstrellas"]) ? "WHERE p.estrella=1" : "";
 
         $sql = "
                SELECT
@@ -23,7 +32,7 @@
                 FROM
                    persona AS p INNER JOIN categoria AS c
                    ON p.categoriaId = c.id
-                   $condicion
+                   $posibleClausulaWhere
                 ORDER BY p.nombre ";
 
         $select = $conexion->prepare($sql);
@@ -43,6 +52,17 @@
 
 <head>
     <meta charset='UTF-8'>
+    <?php
+    if($_SESSION["tema"] == 0){?>
+        <link rel="stylesheet" type="text/css" href="claro.css">
+        <p>Tema de la pagina: <span class='claro'>Claro</span>   <a href='PersonaListado.php?tema=1' class='oscuro'>Oscuro</a></p>
+        <?php
+    }else{?>
+        <link rel="stylesheet" type="text/css" href="oscuro.css">
+        <p>Tema de la pagina:  <a href='PersonaListado.php?tema=0' class='claro'>Claro</a>  <span class='oscuro'>Oscuro</span></p>
+        <?php
+    }
+    ?>
 </head>
 
 
