@@ -1,8 +1,7 @@
 <?php
 require_once "_Varios.php";
-session_start();
-$identificador = $_REQUEST["identificador"];
 
+$identificador = $_REQUEST["identificador"];
 $contrasenna = $_REQUEST["contrasenna"];
 $nombre = $_REQUEST["nombre"];
 $apellidos = $_REQUEST["apellidos"];

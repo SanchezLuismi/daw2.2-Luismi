@@ -5,7 +5,7 @@ session_start();
 function obtenerPdoConexionBD(): PDO
 {
     $servidor = "localhost";
-    $bd = "minifb";
+    $bd = "MiniFb";
     $identificador = "root";
     $contrasenna = "";
     $opciones = [
@@ -27,10 +27,22 @@ function obtenerPdoConexionBD(): PDO
 function obtenerUsuario(string $identificador, string $contrasenna): ?array
 {
     $conexion = obtenerPdoConexionBD();
-    $sql1 = "SELECT * FROM usuario WHERE identificador = ? and contrasenna = ?;";
+    $sql1 = "SELECT * FROM Usuario WHERE identificador = ? and BINARY contrasenna = ?;";
 
     $select = $conexion->prepare($sql1);
     $select->execute([$identificador,$contrasenna]); // Se añade el parámetro a la consulta preparada.
+    $rs = $select->fetchAll();
+
+    return $select->rowCount()==1 ? $rs[0] : null;
+}
+
+function obtenerUsuarioCreado(string $identificador): ?array
+{
+    $conexion = obtenerPdoConexionBD();
+    $sql1 = "SELECT * FROM Usuario WHERE id = ?;";
+
+    $select = $conexion->prepare($sql1);
+    $select->execute([$identificador]); // Se añade el parámetro a la consulta preparada.
     $rs = $select->fetchAll();
 
     return $select->rowCount()==1 ? $rs[0] : null;
@@ -78,14 +90,16 @@ function redireccionar(string $url)
 function crearUsuario($identificador, $contrasenna, $nombre, $apellidos): ?array
 {
     $conexion = obtenerPdoConexionBD();
-    $sql = "INSERT INTO usuario (identificador,contrasenna,nombre,apellidos) VALUES (?,?,?,?)";
-    $parametros = [$identificador,$contrasenna,$nombre,$apellidos];
+    $sql = "INSERT INTO Usuario (identificador,contrasenna,codigoCookie,tipoUsuario,nombre,apellidos) VALUES (?,?,?,?,?,?)";
+    $parametros = [$identificador,$contrasenna,null,0,$nombre,$apellidos];
 
     $select = $conexion->prepare($sql);
-    $select->execute([$parametros]); // Se añade el parámetro a la consulta preparada.
-    $rs = $select->fetchAll();
+    $select->execute($parametros); // Se añade el parámetro a la consulta preparada.
+    $rs = $conexion->lastInsertId();
 
-    return $select->rowCount()==1 ? $rs[0] : null;
+    $arrayUsuario = obtenerUsuarioCreado($rs);
+
+    return $arrayUsuario;
 }
 
 function syso(string $contenido)
