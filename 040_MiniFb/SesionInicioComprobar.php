@@ -24,6 +24,6 @@ if ($arrayUsuario) { // HAN venido datos: identificador existía y contraseña e
    // echo print_r($arrayUsuario);
     redireccionar("ContenidoPrivado1.php");
 } else {
-   redireccionar("SesionInicioMostrarFormulario.php");
+   redireccionar("SesionInicioMostrarFormulario.php?datosErroneos");
 }
 ?>

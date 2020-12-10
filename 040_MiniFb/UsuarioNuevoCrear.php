@@ -1,17 +1,20 @@
 <?php
+require_once "_Varios.php";
+session_start();
+$identificador = $_REQUEST["identificador"];
 
-// TODO ...$_REQUEST["..."]...
+$contrasenna = $_REQUEST["contrasenna"];
+$nombre = $_REQUEST["nombre"];
+$apellidos = $_REQUEST["apellidos"];
 
-// TODO Intentar crear (añadir funciones en _Varios.php para crear y tal).
-//
-// TODO Y redirigir a donde sea.
-
-$arrayUsuario = crearUsuario($identificador, $contrasenna, ....);
+$arrayUsuario = crearUsuario($identificador, $contrasenna, $nombre, $apellidos);
 
 // TODO ¿Excepciones?
 
-if ($arrayUsuario) {
-
+if ($arrayUsuario) { // HAN venido datos: identificador existía y contraseña era correcta.
+    marcarSesionComoIniciada($arrayUsuario);
+    // echo print_r($arrayUsuario);
+    redireccionar("ContenidoPrivado1.php");
 } else {
-
+    redireccionar("UsuarioNuevoFormulario.php?datosErroneos");
 }

@@ -75,6 +75,19 @@ function redireccionar(string $url)
     exit;
 }
 
+function crearUsuario($identificador, $contrasenna, $nombre, $apellidos): ?array
+{
+    $conexion = obtenerPdoConexionBD();
+    $sql = "INSERT INTO usuario (identificador,contrasenna,nombre,apellidos) VALUES (?,?,?,?)";
+    $parametros = [$identificador,$contrasenna,$nombre,$apellidos];
+
+    $select = $conexion->prepare($sql);
+    $select->execute([$parametros]); // Se añade el parámetro a la consulta preparada.
+    $rs = $select->fetchAll();
+
+    return $select->rowCount()==1 ? $rs[0] : null;
+}
+
 function syso(string $contenido)
 {
     file_put_contents('php://stderr', $contenido . "\n");
