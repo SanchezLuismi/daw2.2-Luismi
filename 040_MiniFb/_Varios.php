@@ -63,18 +63,15 @@ function haySesionIniciada(): bool
     // TODO Pendiente hacer la comprobación.
 
     // Está iniciada si isset($_SESSION["id"])
-
-    if(isset($_SESSION["id"])){
-        return true;
-    }else{
-        return false;
-    }
+    return isset($_SESSION["id"]) ? true : false;
 
 }
 
 function cerrarSesion()
 {
     session_destroy();
+    setcookie('codigoCookie', "");
+    setcookie('identificador',"");
     unset($_SESSION);
     // TODO session_destroy() y unset de $_SESSION (por si acaso).
 }
@@ -101,6 +98,62 @@ function crearUsuario($identificador, $contrasenna, $nombre, $apellidos): ?array
 
     return $arrayUsuario;
 }
+
+function generarCookieRecordar(array $arrayUsuario)
+{
+    // Creamos un código cookie muy complejo (no necesariamente único).
+    $codigoCookie = generarCadenaAleatoria(32); // Random...
+
+    $conexion = obtenerPdoConexionBD();
+    $sql = "UPDATE Usuario SET codigoCookie=? WHERE identificador=?";
+    $parametros = [$codigoCookie,$arrayUsuario["identificador"]];
+    $sentencia = $conexion->prepare($sql);
+    $sqlConExito = $sentencia->execute($parametros);
+
+    if($sqlConExito){
+        $arrayUsuario["codigoCookie"] =$codigoCookie;
+        setcookie('codigoCookie', $codigoCookie);
+        setcookie('identificador', $arrayUsuario["identificador"]);
+    }
+
+    // TODO $arrayUsuario["codigoCookie"] = ...
+
+    // TODO Enviamos al cliente, en forma de cookies, el código cookie y su identificador.
+}
+
+function borrarCookieRecordar(array $arrayUsuario)
+{
+    // TODO Eliminar el código cookie de nuestra BD.
+
+    // TODO Pedir borrar cookie (setcookie con tiempo time() - negativo...)
+}
+
+function generarCadenaAleatoria($longitud): string
+{
+    for ($s = '', $i = 0, $z = strlen($a = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789')-1; $i != $longitud; $x = rand(0,$z), $s .= $a[$x], $i++);
+    return $s;
+}
+
+function hayCookieValida(): bool
+{
+    if($_COOKIE["codigoCookie"] && $_COOKIE["identificador"]){
+        $conexion = obtenerPdoConexionBD();
+        $sql1 = "SELECT * FROM Usuario WHERE identificador = ? AND BINARY codigoCookie=?;";
+
+        $select = $conexion->prepare($sql1);
+        $select->execute([$_COOKIE["identificador"],$_COOKIE["codigoCookie"]]); // Se añade el parámetro a la consulta preparada.
+        $rs = $select->fetchAll();
+        if($select->rowCount()==1){
+            return true;
+        }else{
+            return false;
+        }
+        //return  $select->rowCount()==1? true : false;
+    }else{
+        return false;
+    }
+}
+
 
 function syso(string $contenido)
 {

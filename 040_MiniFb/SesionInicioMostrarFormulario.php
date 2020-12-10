@@ -27,6 +27,8 @@
 <form action='SesionInicioComprobar.php' method='get'>
     <p>Usuario: <input type='text' name='identificador' /></p>
     <p>Contraseña: <input type='password' name='contrasenna' /></p>
+    <label for='recordar'>Recuérdame aunque cierre el navegador</label>
+    <input type='checkbox' name='recordar' id='recordar'><br><br>
     <input type='submit' name='boton' value="Enviar" />
 </form>
 

@@ -3,8 +3,8 @@
 require_once "_Varios.php";
 
 
-if (!haySesionIniciada()) {
-    header("SesionInicioMostrarFormulario.php");
+if (!haySesionIniciada() && !hayCookieValida()) {
+    redireccionar("SesionInicioMostrarFormulario.php");
 }
 
 ?>
