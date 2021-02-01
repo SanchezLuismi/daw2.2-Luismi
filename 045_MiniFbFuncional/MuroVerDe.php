@@ -7,17 +7,17 @@
     //     (Mostrar info del usuario logueado y tal...)
     //   - Si NO la hay, redirigimos a SesionInicioFormulario.php
 
-    if (!haySesionRamIniciada() && !intentarCanjearSesionCookie()) {
+    if (!DAO::haySesionRamIniciada() && !DAO::intentarCanjearSesionCookie()) {
         redireccionar("SesionInicioFormulario.php");
     }
 
-    if($_REQUEST["identificador"]){
-        $identificador=$_REQUEST["identificador"];
+    if(isset($_REQUEST["id"])){
+         $id = $_REQUEST["id"];
     }else{
-        $identificador = $_SESSION["identificador"];
+        $id = $_SESSION["id"];
     }
 
-    $usuario = DAO::obtenerUsuarioPorIdentificador($identificador);
+    $usuario = DAO::obtenerUsuarioPorId($id);
     $publicaciones=DAO::publicacionObtenerPorEmisorId($usuario->getId());
     print_r($publicaciones);
 ?>
@@ -34,9 +34,9 @@
 
 <body>
 
-<?php pintarInfoSesion(); ?>
+<?php DAO::pintarInfoSesion(); ?>
 
-<h1>Muro de <?=$_SESSION["nombre"]?> <?=$_SESSION["apellidos"]?></h1>
+<h1>Muro de <?=$usuario->getNombre()?> <?=$usuario->getApellidos()?></h1>
 
 <table border='1'>
 
@@ -51,25 +51,13 @@
     <?php foreach ($publicaciones as $publicacion) { ?>
         <tr>
             <td><?=$publicacion->getFecha();?></td>
-            <td><?=$publicacion->getDestacadaHasta();?></td>
             <td><?php
-                $emisor=$publicacion->getEmisorId();
-                if($emisor){?>
-                    <?=$emisor->getNombre()?> . " " . <?=$emisor->getApellidos()?>
-                <?php}else{
-                    ?>
-                    A TODOS LOS USUARIOS
-                <?php}
+                if($publicacion->getDestacadaHasta()){?>
+                    <?=$publicacion->getDestacadaHasta()?>
+                <?php  }
                 ?></td>
-            <td><?php
-                $destinatario=$publicacion->getDestinatarioId();
-                if($destinatario){?>
-                    <?=$destinatario->getNombre()?> . " " . <?=$destinatario->getApellidos()?>
-                <?php}else{
-                    ?>
-                    A TODOS LOS USUARIOS
-                <?php}
-                ?></td>
+            <td><a href="MuroVerDe.php?id=<?=$publicacion->getEmisorId()?>"> <?=$publicacion->getEmisorNombre();?> </a></td>
+            <td><a href="MuroVerDe.php?id=<?=$publicacion->getDestinatarioId()?>"><?=$publicacion->getDestinatarioNombre();?></td>
             <td><?=$publicacion->getAsunto();?></td>
             <td><?=$publicacion->getContenido();?></td>
         </tr>

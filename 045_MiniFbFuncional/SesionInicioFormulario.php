@@ -1,7 +1,8 @@
 <?php
     require_once "_com/Varios.php";
+    require_once "_com/DAO.php";
 
-    if (haySesionRamIniciada()) redireccionar("MuroVerGlobal.php");
+    if (DAO::haySesionRamIniciada()) redireccionar("MuroVerGlobal.php");
 
     $datosErroneos = isset($_REQUEST["datosErroneos"]);
 ?>

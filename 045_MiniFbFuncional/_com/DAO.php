@@ -37,21 +37,60 @@ class DAO
         return $conexion;
     }
 
-    function intentarCanjearSesionCookie(): bool
+
+    public function marcarSesionComoIniciada($usuario)
+    {
+        // TODO Anotar en el post-it todos estos datos:
+        $_SESSION["id"] = $usuario->getId();
+        $_SESSION["identificador"] = $usuario->getIdentificador();
+        $_SESSION["codigoCookie"] = $usuario->getCodigoCookie();
+        $_SESSION["contrasenna"] = $usuario->getContrasenna();
+        $_SESSION["nombre"] = $usuario->getNombre();
+        $_SESSION["apellidos"] = $usuario->getApellidos();
+    }
+
+    public function haySesionRamIniciada(): bool
+    {
+        // TODO Pendiente hacer la comprobación.
+
+        // Está iniciada si isset($_SESSION["id"])
+        return isset($_SESSION["id"]) ? true : false;
+
+    }
+
+    public function borrarCookies()
+    {
+        setcookie("id", "", time() - 3600);
+        setcookie("identificador", "", time() - 3600);
+        setcookie("codigoCookie", "", time() - 3600);
+        setcookie("contrasenna", "", time() - 3600);
+        setcookie("nombre", "", time() - 3600);
+        setcookie("apellidos", "", time() - 3600);
+    }
+
+    public function pintarInfoSesion() {
+        if (self::haySesionRamIniciada()) {
+            echo "<span>Sesión iniciada por <a href='UsuarioPerfilVer.php'>$_SESSION[identificador]</a> ($_SESSION[nombre] $_SESSION[apellidos]) <a href='SesionCerrar.php'>Cerrar sesión</a></span>";
+        } else {
+            echo "<a href='SesionInicioFormulario.php'>Iniciar sesión</a>";
+        }
+    }
+
+    public function intentarCanjearSesionCookie(): bool
     {
         if (isset($_COOKIE["identificador"]) && isset($_COOKIE["codigoCookie"])) {
-            $arrayUsuario = obtenerUsuarioPorCodigoCookie($_COOKIE["identificador"], $_COOKIE["codigoCookie"]);
+            $arrayUsuario = self::obtenerUsuarioPorCodigoCookie($_COOKIE["identificador"], $_COOKIE["codigoCookie"]);
 
             if ($arrayUsuario) {
-                establecerSesionRam($arrayUsuario);
-                establecerSesionCookie($arrayUsuario); // Para re-generar el numerito.
+                self::marcarSesionComoIniciada($arrayUsuario);
+                self::establecerSesionCookie($arrayUsuario); // Para re-generar el numerito.
                 return true;
             } else { // Venían cookies pero los datos no estaban bien.
-                borrarCookies(); // Las borramos para evitar problemas.
+                self::borrarCookies(); // Las borramos para evitar problemas.
                 return false;
             }
         } else { // No vienen ambas cookies.
-            borrarCookies(); // Las borramos por si venía solo una de ellas, para evitar problemas.
+            self::borrarCookies(); // Las borramos por si venía solo una de ellas, para evitar problemas.
             return false;
         }
     }
@@ -71,7 +110,7 @@ class DAO
         setcookie("codigoCookie", $codigoCookie, time() + 600);
 
     }
-    function destruirSesionRamYCookie()
+    public function destruirSesionRamYCookie()
     {
             session_destroy();
             setcookie('codigoCookie', "");
@@ -119,43 +158,31 @@ class DAO
 
     private static function publicacionCrearDesdeRs(array $fila): Publicacion
     {
-        if($fila["pEmisorId"] == null){
-            $emisorId = new Usuario();
-        }else{
-            $emisorId =new Usuario($fila["uId"],$fila["uIdentificador"],$fila["uContrasenna"],$fila["uCodigoCookie"],$fila["uTipoUsuario"],
-                $fila["uNombre"],$fila["uApellidos"]);
-        }
 
-        if($fila["pDestinatarioId"] == null){
-            $destinatarioId=new Usuario();
-        }else{
-            $destinatarioId=new Usuario($fila["uId"],$fila["uIdentificador"],$fila["uContrasenna"],$fila["uCodigoCookie"],$fila["uTipoUsuario"],
-                $fila["uNombre"],$fila["uApellidos"]);
-        }
-
-        if($fila["pDestacadaHasta"] == null){
-            $destacadaHasta="";
-        }else{
-            $destacadaHasta=$fila["destacadaHasta"];
-        }
-
-        return new Publicacion($fila["pId"], $fila["pFecha"],$emisorId,$destinatarioId,
-            $destacadaHasta,$fila["pAsunto"],$fila["pContenido"]);
+        return new Publicacion($fila["pId"], $fila["pFecha"],$fila["pEmisorId"],$fila["pAsunto"],$fila["pContenido"],$fila["pDestinatarioId"],
+            $fila["pDestacadaHasta"]);
 
     }
 
-    public static function publicacionObtenerPorEmisorId($emisorId): ?Publicacion
+    public static function publicacionObtenerPorEmisorId($emisorId): ?array
     {
+        $datos = [];
         $rs = self::ejecutarConsulta(
             "SELECT p.id as pId, p.fecha as pFecha,p.emisorId as pEmisorId,p.destinatarioId as pDestinatarioId,
 	                p.destacadaHasta as pDestacadaHasta,p.asunto as pAsunto, p.contenido as pContenido,	
-	                u.id as uId,u.identificador as uIdentificador,u.contrasenna as uContrasenna,u.codigoCookie as uCodigoCookie,u.tipoUsuario as uTipoUsuario,
-	                u.nombre as uNombre, u.apellidos as uApellidos                
-                FROM publicacion as p INNER JOIN usuario as u on p.emisorId = u.Id WHERE p.emisorId= ? ORDER BY p.fecha ",
+	                u.id as uId,u.nombre as uNombre, u.apellidos as uApellidos,usu.Id as usuId, usu.nombre as usuNombre, usu.apellidos as usuApellidos           
+                FROM publicacion as p 
+                INNER JOIN usuario as u on p.emisorId = u.Id 
+                INNER JOIN usuario as usu on p.destinatarioId= usu.Id 
+                WHERE p.emisorId= ? ORDER BY p.fecha ",
             [$emisorId]
         );
-        if ($rs) return self::publicacionCrearDesdeRs($rs[0]);
-        else return null;
+
+        foreach ($rs as $fila) {
+            $publicacion = self::publicacionCrearDesdeRs($fila);
+            array_push($datos, $publicacion);
+        }
+        return $datos;
     }
 
     public static function publicacionActualizar($id, $nombre)
@@ -182,8 +209,7 @@ class DAO
         $rs = self::ejecutarConsulta(
             "SELECT p.id as pId, p.fecha as pFecha,p.emisorId as pEmisorId,p.destinatarioId as pDestinatarioId,
 	                p.destacadaHasta as pDestacadaHasta,p.asunto as pAsunto, p.contenido as pContenido,	
-	              u.id as uId,u.identificador as uIdentificador,u.contrasenna as uContrasenna,u.codigoCookie as uCodigoCookie,u.tipoUsuario as uTipoUsuario,
-	                u.nombre as uNombre, u.apellidos as uApellidos                 
+	              u.id as uId,u.nombre as uNombre, u.apellidos as uApellidos                 
                 FROM publicacion as p INNER JOIN usuario as u on p.emisorId = u.Id ORDER BY p.fecha ",
             []
         );
@@ -204,8 +230,8 @@ class DAO
     /* USUARIO */
     private static function usuarioCrearDesdeRs(array $fila): Usuario
     {
-        return new Usuario($fila["id"],$fila["identificador"],$fila["contrasenna"],$fila["codigoCookie"],
-            $fila["tipoUsuario"],$fila["nombre"],$fila["apellidos"]);
+        return new Usuario($fila["id"],$fila["identificador"],$fila["contrasenna"],$fila["nombre"],$fila["apellidos"],$fila["codigoCookie"],
+            $fila["tipoUsuario"]);
 
     }
 
@@ -215,6 +241,16 @@ class DAO
         $rs = self::ejecutarConsulta(
             "SELECT * FROM usuario WHERE identificador=? AND BINARY contrasenna=?",
             [$identificador,$contrasena]
+        );
+        if ($rs) return self::usuarioCrearDesdeRs($rs[0]);
+        else return null;
+    }
+
+    public static function obtenerUsuarioPorId($id): ?Usuario
+    {
+        $rs = self::ejecutarConsulta(
+            "SELECT * FROM usuario WHERE id=?",
+            [$id]
         );
         if ($rs) return self::usuarioCrearDesdeRs($rs[0]);
         else return null;

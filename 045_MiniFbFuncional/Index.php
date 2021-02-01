@@ -1,6 +1,7 @@
 <?php
 
     require_once "_com/Varios.php";
+    require_once "_com/DAO.php";
 
 ?>
 
@@ -16,7 +17,7 @@
 
 <body>
 
-<?php pintarInfoSesion(); ?>
+<?php DAO::pintarInfoSesion(); ?>
 
 <h1>MiniFb</h1>
 

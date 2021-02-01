@@ -24,60 +24,59 @@ class Publicacion extends Dato
     use Identificable;
 
     private $fecha;
-    private $emisor;
-    private $destinatario;
+    private $emisorId;
+    private $destinatarioId;
     private $destacadaHasta;
     private $asunto;
     private $contenido;
 
-    public function __construct(string $id,string $fecha, Usuario $emisor, Usuario $destinatario, string $destacadaHasta, string $asunto, string $contenido)
+    public function __construct(string $id,string $fecha, int $emisorId, string $asunto, string $contenido,?int $destinatarioId,?string $destacadaHasta)
     {
         $this->setId($id);
         $this->setFecha($fecha);
-        $this->setEmisor($emisor);
-        $this->setDestinatario($destinatario);
+        $this->setEmisorId($emisorId);
+        $this->setDestinatarioId($destinatarioId);
         $this->setDestacadaHasta($destacadaHasta);
         $this->setAsunto($asunto);
         $this->setContenido($contenido);
     }
-
 
     public function getFecha(): string
     {
         return $this->fecha;
     }
 
-    public function setFecha(Usuario $fecha): void
+    public function setFecha(string $fecha): void
     {
         $this->fecha = $fecha;
     }
 
-    public function getEmisor(): Usuario
+    public function getEmisorId(): int
     {
         return $this->emisorId;
     }
 
-    public function setEmisor(Usuario $emisorId): void
+    public function setEmisorId(int $emisorId): void
     {
         $this->emisorId = $emisorId;
     }
 
-    public function getDestinatario(): Usuario
+    public function getDestinatarioId(): ?int
     {
         return $this->destinatarioId;
     }
 
-    public function setDestinatario(Usuario $destinatarioId): void
+    public function setDestinatarioId(?int $destinatarioId): void
     {
         $this->destinatarioId = $destinatarioId;
     }
 
-    public function getDestacadaHasta(): string
+    public function getDestacadaHasta(): ?string
     {
         return $this->destacadaHasta;
     }
 
-    public function setDestacadaHasta(string $destacadaHasta): void
+    public function setDestacadaHasta(?string $destacadaHasta): void
     {
         $this->destacadaHasta = $destacadaHasta;
     }
@@ -119,7 +118,7 @@ class Usuario extends Dato
     private $apellidos;
     
 
-    public function __construct(int $id,string $identificador, string $contrasenna, string $codigoCookie, int $tipoUsuario, string $nombre, string $apellidos)
+    public function __construct(int $id,string $identificador, string $contrasenna, string $nombre, string $apellidos,?string $codigoCookie, ?int $tipoUsuario)
     {
         $this->setId($id);
         $this->setIdentificador($identificador);
@@ -151,12 +150,12 @@ class Usuario extends Dato
         $this->contrasenna = $contrasenna;
     }
 
-    public function getCodigoCookie(): string
+    public function getCodigoCookie(): ?string
     {
         return $this->codigoCookie;
     }
 
-    public function setCodigoCookie(string $codigoCookie): void
+    public function setCodigoCookie(?string $codigoCookie): void
     {
         $this->codigoCookie = $codigoCookie;
     }
@@ -171,12 +170,12 @@ class Usuario extends Dato
         $this->apellidos = $apellidos;
     }
 
-    public function getTipoUsuario(): int
+    public function getTipoUsuario(): ?int
     {
         return $this->tipoUsuario;
     }
 
-    public function setTipoUsuario(int $tipoUsuario): void
+    public function setTipoUsuario(?int $tipoUsuario): void
     {
         $this->tipoUsuario = $tipoUsuario;
     }

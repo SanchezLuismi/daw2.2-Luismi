@@ -8,12 +8,12 @@
     //     (Mostrar info del usuario logueado y tal...)
     //   - Si NO la hay, redirigimos a SesionInicioFormulario.php
 
-    if (!haySesionRamIniciada() && !intentarCanjearSesionCookie()) {
+    if (!DAO::haySesionRamIniciada() && !DAO::intentarCanjearSesionCookie()) {
         redireccionar("SesionInicioFormulario.php");
     }
 
 $publicaciones=DAO::publicacionObtenerTodas();
-    print_r($publicaciones);
+   // print_r($publicaciones);
 
 ?>
 
@@ -29,7 +29,7 @@ $publicaciones=DAO::publicacionObtenerTodas();
 
 <body>
 
-<?php pintarInfoSesion(); ?>
+<?php DAO::pintarInfoSesion(); ?>
 
 <h1>Muro global</h1>
 
@@ -49,9 +49,13 @@ $publicaciones=DAO::publicacionObtenerTodas();
     <?php foreach ($publicaciones as $publicacion) { ?>
         <tr>
             <td><?=$publicacion->getFecha();?></td>
-            <td><?=$publicacion->getDestacadaHasta();?></td>
-            <td><a href="MuroVerDe.php?id=<?=$publicacion->getEmisorId()?>"> <?=$publicacion->getEmisorId();?> </a></td>
-            <td><a href="MuroVerDe.php?id=<?=$publicacion->getId()?>"><?=$publicacion->getDestinatarioId();?></td>
+            <td><?php
+                    if($publicacion->getDestacadaHasta()){?>
+                        <?=$publicacion->getDestacadaHasta()?>
+                  <?php  }
+                ?></td>
+            <td><a href="MuroVerDe.php?id=<?=$publicacion->getEmisorId()?>"> <?=$publicacion->getEmisorNombre();?> </a></td>
+            <td><a href="MuroVerDe.php?id=<?=$publicacion->getDestinatarioId()?>"><?=$publicacion->getDestinatarioNombre();?></td>
             <td><?=$publicacion->getAsunto();?></td>
             <td><?=$publicacion->getContenido();?></td>
         </tr>
