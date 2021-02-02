@@ -164,6 +164,27 @@ class DAO
 
     }
 
+    public static function publicacionObtenerPorDestinatarioId($emisorId): ?array
+    {
+        $datos = [];
+        $rs = self::ejecutarConsulta(
+            "SELECT p.id as pId, p.fecha as pFecha,p.emisorId as pEmisorId,p.destinatarioId as pDestinatarioId,
+	                p.destacadaHasta as pDestacadaHasta,p.asunto as pAsunto, p.contenido as pContenido,	
+	                u.id as uId,u.nombre as uNombre, u.apellidos as uApellidos,usu.Id as usuId, usu.nombre as usuNombre, usu.apellidos as usuApellidos           
+                FROM publicacion as p 
+                INNER JOIN usuario as u on p.emisorId = u.Id 
+                INNER JOIN usuario as usu on p.destinatarioId= usu.Id 
+                WHERE p.destinatarioId= ? ORDER BY p.fecha ",
+            [$emisorId]
+        );
+
+        foreach ($rs as $fila) {
+            $publicacion = self::publicacionCrearDesdeRs($fila);
+            array_push($datos, $publicacion);
+        }
+        return $datos;
+    }
+
     public static function publicacionObtenerPorEmisorId($emisorId): ?array
     {
         $datos = [];
@@ -193,12 +214,11 @@ class DAO
         );
     }
 
-    public static function publicacionCrear($publicacion)
+    public static function publicacionCrear($fecha,$emisor,$destinatario,$destacadaHasta,$asunto,$contenido)
     {
         self::ejecutarActualizacion(
-            "INSERT INTO publicacion (nombre) VALUES (?,?,?,?,?,?)",
-            [$publicacion->getFecha(),$publicacion->getEmisorId(),$publicacion->getDestinatarioId(),$publicacion->getDestacadaHasta(),
-                $publicacion->getAsunto(),$publicacion->getContenido()]
+            "INSERT INTO publicacion (fecha,emisorId,destinatarioId,destacadaHasta,asunto,contenido) VALUES (?,?,?,?,?,?)",
+            [$fecha,$emisor,$destinatario,$destacadaHasta,$asunto,$contenido]
         );
     }
 
@@ -263,6 +283,16 @@ class DAO
             [$identificador]
         );
         if ($rs) return self::usuarioCrearDesdeRs($rs[0]);
+        else return null;
+    }
+
+    public static function obtenerNombreUsuarioPorId($id): ?string
+    {
+        $rs = self::ejecutarConsulta(
+            "SELECT nombre,apellidos FROM usuario WHERE id=?",
+            [$id]
+        );
+        if ($rs) return $nombre=$rs[0]["nombre"] . " " . $rs[0]["apellidos"];
         else return null;
     }
 

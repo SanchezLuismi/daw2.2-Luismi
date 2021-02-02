@@ -54,14 +54,25 @@ $publicaciones=DAO::publicacionObtenerTodas();
                         <?=$publicacion->getDestacadaHasta()?>
                   <?php  }
                 ?></td>
-            <td><a href="MuroVerDe.php?id=<?=$publicacion->getEmisorId()?>"> <?=$publicacion->getEmisorNombre();?> </a></td>
-            <td><a href="MuroVerDe.php?id=<?=$publicacion->getDestinatarioId()?>"><?=$publicacion->getDestinatarioNombre();?></td>
+            <td><a href="MuroVerDe.php?id=<?=$publicacion->getEmisorId()?>"> <?=DAO::obtenerNombreUsuarioPorId($publicacion->getEmisorId())?> </a></td>
+            <td><a href="MuroVerDe.php?id=<?=$publicacion->getDestinatarioId()?>"><?=DAO::obtenerNombreUsuarioPorId($publicacion->getDestinatarioId())?></td>
             <td><?=$publicacion->getAsunto();?></td>
             <td><?=$publicacion->getContenido();?></td>
         </tr>
     <?php } ?>
 
 </table>
+<br />
+<form action='PublicacionNuevaCrear.php' method='post'>
+    <label><strong>Asunto: </strong></label>
+    <input type='text' name='asunto' value=''><br />
+    <label><strong>Contenido: </strong></label>
+    <textarea name="contenido" rows="10" cols="50"></textarea><br />
+    <input type='submit' value='Crear publicacion'>
+</form>
+
+<br />
+
 <a href='MuroVerDe.php'>Ir a mi muro.</a>
 
 </body>
