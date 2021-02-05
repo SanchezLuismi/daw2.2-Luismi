@@ -12,7 +12,7 @@ class DAO
         $servidor = "localhost";
         $identificador = "root";
         $contrasenna = "";
-        $bd = "Agenda"; // Schema
+        $bd = "agenda2"; // Schema
         $opciones = [
             PDO::ATTR_EMULATE_PREPARES => false, // Modo emulación desactivado para prepared statements "reales"
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Que los errores salgan como excepciones.
@@ -66,7 +66,7 @@ class DAO
     public static function categoriaObtenerPorId(int $id): ?Categoria
     {
         $rs = self::ejecutarConsulta(
-            "SELECT * FROM Categoria WHERE id=?",
+            "SELECT * FROM categoria WHERE id=?",
             [$id]
         );
         if ($rs) return self::categoriaCrearDesdeRs($rs[0]);
@@ -76,7 +76,7 @@ class DAO
     public static function categoriaActualizar($id, $nombre)
     {
         self::ejecutarActualizacion(
-            "UPDATE Categoria SET nombre=? WHERE id=?",
+            "UPDATE categoria SET nombre=? WHERE id=?",
             [$nombre, $id]
         );
     }
@@ -84,7 +84,7 @@ class DAO
     public static function categoriaCrear(string $nombre)
     {
         self::ejecutarActualizacion(
-            "INSERT INTO Categoria (nombre) VALUES (?)",
+            "INSERT INTO categoria (nombre) VALUES (?)",
             [$nombre]
         );
     }
@@ -94,12 +94,34 @@ class DAO
         $datos = [];
 
         $rs = self::ejecutarConsulta(
-            "SELECT * FROM Categoria ORDER BY nombre",
+            "SELECT * FROM categoria ORDER BY nombre",
             []
         );
 
         foreach ($rs as $fila) {
             $categoria = self::categoriaCrearDesdeRs($fila);
+            array_push($datos, $categoria);
+        }
+
+        return $datos;
+    }
+
+    private static function personaCrearDesdeRs(array $fila): Categoria
+    {
+        return new Categoria($fila["id"], $fila["nombre"],$fila["telefono"],$fila["categoria_id"]);
+    }
+
+    public static function personasCategoriaObtener($id): array
+    {
+        $datos = [];
+
+        $rs = self::ejecutarConsulta(
+            "SELECT * FROM persona where categoria_id =(SELECT id FROM categoria where id=?) ORDER BY nombre",
+            [$id]
+        );
+
+        foreach ($rs as $fila) {
+            $categoria = self::personaCrearDesdeRs($fila);
             array_push($datos, $categoria);
         }
 

@@ -1,42 +1,25 @@
 <?php
-	require_once "_com/Varios.php";
-
-	$conexion = obtenerPdoConexionBD();
-	
-	// Se recoge el parámetro "id" de la request.
-	$id = (int)$_REQUEST["id"];
-
-	// Si id es -1 quieren CREAR una nueva entrada ($nueva_entrada tomará true).
-	// Sin embargo, si id NO es -1 quieren VER la ficha de una categoría existente
-	// (y $nueva_entrada tomará false).
-	$nuevaEntrada = ($id == -1);
-
-	if ($nuevaEntrada) { // Quieren CREAR una nueva entrada, así que no se cargan datos.
-		$categoriaNombre = "<introduzca nombre>";
-	} else { // Quieren VER la ficha de una categoría existente, cuyos datos se cargan.
-		$sql = "SELECT nombre FROM Categoria WHERE id=?";
-
-        $select = $conexion->prepare($sql);
-        $select->execute([$id]); // Se añade el parámetro a la consulta preparada.
-        $rs = $select->fetchAll();
-		
-		 // Con esto, accedemos a los datos de la primera (y esperemos que única) fila que haya venido.
-		$categoriaNombre = $rs[0]["nombre"];
-	}
+require_once "_com/DAO.php";
 
 
 
-    $sql = "SELECT * FROM Persona WHERE categoriaId=? ORDER BY nombre";
+// Se recoge el parámetro "id" de la request.
+$id = (int)$_REQUEST["id"];
 
-    $select = $conexion->prepare($sql);
-    $select->execute([$id]); // Array vacío porque la consulta preparada no requiere parámetros.
-    $rsPersonasDeLaCategoria = $select->fetchAll();
+// Si id es -1 quieren CREAR una nueva entrada ($nueva_entrada tomará true).
+// Sin embargo, si id NO es -1 quieren VER la ficha de una categoría existente
+// (y $nueva_entrada tomará false).
+$nuevaEntrada = ($id == -1);
 
-
-	// INTERFAZ:
-    // $nuevaEntrada
-    // $categoriaNombre
-    // $rsPersonasDeLaCategoria
+if ($nuevaEntrada) { // Quieren CREAR una nueva entrada, así que no se cargan datos.
+    $categoriaId = -1;
+    $categoriaNombre = "<introduzca nombre>";
+} else { // Quieren VER la ficha de una categoría existente, cuyos datos se cargan.
+    $categoria = DAO::categoriaObtenerPorId($id);
+    $categoriaNombre = $categoria->getNombre();
+    $categoriaId = $categoria->getId();
+    $personas = DAO::personasCategoriaObtener($id);
+}
 ?>
 
 
@@ -77,16 +60,6 @@
 
 <br />
 
-<p>Personas que pertenecen actualmente a la categoría:</p>
-
-<ul>
-<?php
-    foreach ($rsPersonasDeLaCategoria as $fila) {
-        echo "<li>$fila[nombre] $fila[apellidos]</li>";
-    }
-?>
-</ul>
-
 <?php if (!$nuevaEntrada) { ?>
     <br />
     <a href='CategoriaEliminar.php?id=<?=$id?>'>Eliminar categoría</a>
@@ -95,7 +68,7 @@
 <br />
 <br />
 
-<a href='CategoriaObtenerTodas.php'>Volver al listado de categorías.</a>
+<a href='Agenda.html'>Volver al listado de categorías.</a>
 
 </body>
 
