@@ -18,8 +18,18 @@ if ($nuevaEntrada) { // Quieren CREAR una nueva entrada, así que no se cargan d
     $categoria = DAO::categoriaObtenerPorId($id);
     $categoriaNombre = $categoria->getNombre();
     $categoriaId = $categoria->getId();
-    $personas = DAO::personasCategoriaObtener($id);
+    //$personas = DAO::personasCategoriaObtener($categoriaId);
 }
+
+/*<p>Personas que pertenecen actualmente a la categoría:</p>
+
+<ul>
+    <?php
+    foreach ($personas as $fila) {
+        echo "<li>$fila->getNombre()</li>";
+    }
+    ?>
+</ul>*/
 ?>
 
 

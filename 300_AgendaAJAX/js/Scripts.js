@@ -1,7 +1,11 @@
-window.onload = inicializaciones;
+window.onload = inicializaciones;ç
+var tablaCategorias;
+
 
 function inicializaciones() {
+    tablaCategorias = document.getElementById("tablaCategorias");
     cargarTodasLasCategorias();
+    document.getElementById("submitCrearCategoria").addEventListener("click",crearCategoria);
 }
 
 function cargarTodasLasCategorias() {
@@ -24,9 +28,7 @@ function cargarTodasLasCategorias() {
 }
 
 function cargaRequest(xml){
-
-    var tablaCategorias = document.getElementById("tablaCategorias");
-    var datos = document.getElementById("datos");
+   // var datos = document.getElementById("datos");
 
     var objeto = JSON.parse(xml);
     var tamano=objeto.length
@@ -41,8 +43,28 @@ function cargaRequest(xml){
         enlace.appendChild(textoCelda);
         celda.appendChild(enlace);
         hilera.appendChild(celda);
-        datos.appendChild(hilera);
+        tablaCategorias.appendChild(hilera);
 
     }
-    tablaCategorias.appendChild(datos);
+    //tablaCategorias.appendChild(datos);
 }
+
+function crearCategoria(){
+
+    var nombreCat=document.getElementById("nombre").value;
+
+    var req = new XMLHttpRequest();
+
+    req.onreadystatechange = function(){
+        if(this.readyState == 4 && this.status == 200){
+
+            cargaRequest(this.response);
+        }
+
+    };
+
+    req.open("GET","CategoriaGuardar?nombre="+nombreCat,true);
+    req.send();
+
+}
+

@@ -111,12 +111,12 @@ class DAO
         return new Categoria($fila["id"], $fila["nombre"],$fila["telefono"],$fila["categoria_id"]);
     }
 
-    public static function personasCategoriaObtener($id): array
+    public static function personasCategoriaObtener(int $id): array
     {
         $datos = [];
 
         $rs = self::ejecutarConsulta(
-            "SELECT * FROM persona where categoria_id =(SELECT id FROM categoria where id=?) ORDER BY nombre",
+            "SELECT * FROM persona where categoria_id = (SELECT id FROM categoria where id=?) ORDER BY nombre",
             [$id]
         );
 
