@@ -52,6 +52,7 @@ function cargaRequest(xml){
 function crearCategoria(){
 
     var nombreCat=document.getElementById("nombre").value;
+    document.getElementById("nombre").value="";
 
     var req = new XMLHttpRequest();
 
