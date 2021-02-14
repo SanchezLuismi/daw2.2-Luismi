@@ -1,4 +1,4 @@
-window.onload = inicializaciones;ç
+window.onload = inicializaciones;
 var tablaCategorias;
 
 
@@ -33,18 +33,28 @@ function cargaRequest(xml){
     var objeto = JSON.parse(xml);
     var tamano=objeto.length
 
+
     for(var i=0;i<tamano;i++){
-        var hilera = document.createElement("tr");
-        var celda = document.createElement("td");
-        var enlace = document.createElement("a");
-        enlace.setAttribute("href","CategoriaFicha.php?id=" +objeto[i].id);
-        var textoCelda=document.createTextNode(objeto[i].nombre);
+        var tr = document.createElement("tr");
+        var td = document.createElement("td");
+        var a = document.createElement("a");
+        a.setAttribute("href","CategoriaFicha.php?id=" + objeto[i].id);
+        var textoContenido = document.createTextNode(objeto[i].nombre);
 
-        enlace.appendChild(textoCelda);
-        celda.appendChild(enlace);
-        hilera.appendChild(celda);
-        tablaCategorias.appendChild(hilera);
+        var tdBorrado = document.createElement("td");
+        var aBorrado = document.createElement("a");
+        aBorrado.setAttribute("href","CategoriaEliminar.php?id=" + objeto[i].id);
+        var textoBorrado = document.createTextNode("X");
 
+        a.appendChild(textoContenido);
+        td.appendChild(a);
+
+        aBorrado.appendChild(textoBorrado);
+        tdBorrado.appendChild(aBorrado);
+
+        tr.appendChild(td);
+        tr.appendChild(tdBorrado);
+        tablaCategorias.appendChild(tr);
     }
     //tablaCategorias.appendChild(datos);
 }
@@ -59,13 +69,59 @@ function crearCategoria(){
     req.onreadystatechange = function(){
         if(this.readyState == 4 && this.status == 200){
 
-            cargaRequest(this.response);
+            cargaCategoria(this.response);
         }
 
     };
 
-    req.open("GET","CategoriaGuardar?nombre="+nombreCat,true);
+    req.open("GET","CategoriaCrear.php?nombre="+nombreCat,true);
     req.send();
 
+}
+
+function cargaCategoria(xml){
+    var obj = JSON.parse(xml);
+    insertarCategoriaPorPosicion(obj);
+}
+
+function insertarCategoriaPorPosicion(categoria) {
+
+    var container = document.querySelector('#tablaCategorias');
+    var p=0;
+    var lista = container.querySelectorAll("tr td");
+    var listaNombres=[];
+    var nodo;
+    var nombre = categoria.nombre.toLowerCase()
+    var letraInicial = nombre.substr(0,1);
+
+    for(var i=0;i<lista.length;i=i+2) {
+        var nombreLista = lista[i].outerText.toLowerCase()
+        var letra = nombreLista.substr(0, 1);
+        if (letraInicial < letra) {
+            nodo = lista[i];
+        }
+
+    }
+
+    var tr = document.createElement("tr");
+    var td = document.createElement("td");
+    var a = document.createElement("a");
+    a.setAttribute("href","CategoriaFicha.php?id=" + categoria.id);
+    var textoContenido = document.createTextNode(categoria.nombre);
+
+    var tdBorrado = document.createElement("td");
+    var aBorrado = document.createElement("a");
+    aBorrado.setAttribute("href","CategoriaEliminar.php?id=" + categoria.id);
+    var textoBorrado = document.createTextNode("X");
+
+    a.appendChild(textoContenido);
+    td.appendChild(a);
+
+    aBorrado.appendChild(textoBorrado);
+    tdBorrado.appendChild(aBorrado);
+
+    tr.appendChild(td);
+    tr.appendChild(tdBorrado);
+    tablaCategorias.insertBefore(tr,nodo);
 }
 

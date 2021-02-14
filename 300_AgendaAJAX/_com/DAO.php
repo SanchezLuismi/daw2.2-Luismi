@@ -12,7 +12,7 @@ class DAO
         $servidor = "localhost";
         $identificador = "root";
         $contrasenna = "";
-        $bd = "agenda2"; // Schema
+        $bd = "agenda"; // Schema
         $opciones = [
             PDO::ATTR_EMULATE_PREPARES => false, // Modo emulación desactivado para prepared statements "reales"
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Que los errores salgan como excepciones.
@@ -51,7 +51,18 @@ class DAO
         $sqlConExito = $actualizacion->execute($parametros);
 
         if (!$sqlConExito) return null;
-        else return $actualizacion->rowCount();
+        else return self::$pdo->lastInsertId();
+    }
+
+    private static function ejecutarBorrado(string $sql, array $parametros): ?int
+    {
+        if (!isset(self::$pdo)) self::$pdo = self::obtenerPdoConexionBd();
+
+        $actualizacion = self::$pdo->prepare($sql);
+        $sqlConExito = $actualizacion->execute($parametros);
+
+        if (!$sqlConExito) return null;
+        else return 1;
     }
 
 
@@ -83,10 +94,21 @@ class DAO
 
     public static function categoriaCrear(string $nombre)
     {
-        self::ejecutarActualizacion(
-            "INSERT INTO categoria (nombre) VALUES (?)",
+        $idAutogenerado = self::ejecutarActualizacion(
+            "INSERT INTO Categoria (nombre) VALUES (?)",
             [$nombre]
         );
+
+        return self::categoriaObtenerPorId($idAutogenerado);
+    }
+
+    public static function categoriaEliminar($id) : ?int
+    {
+       $rs = self::ejecutarBorrado(
+            "DELETE FROM Categoria WHERE id=?",
+            [$id]
+        );
+       return $rs;
     }
 
     public static function categoriaObtenerTodas(): array
@@ -108,7 +130,7 @@ class DAO
 
     private static function personaCrearDesdeRs(array $fila): Categoria
     {
-        return new Categoria($fila["id"], $fila["nombre"],$fila["telefono"],$fila["categoria_id"]);
+        return new Persona($fila["id"], $fila["nombre"],$fila["telefono"],$fila["categoria_id"]);
     }
 
     public static function personasCategoriaObtener(int $id): array

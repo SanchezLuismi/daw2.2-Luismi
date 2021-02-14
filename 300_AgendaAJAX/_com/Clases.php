@@ -6,7 +6,7 @@ abstract class Dato
 
 trait Identificable
 {
-    protected int $id;
+    protected $id;
 
     public function getId(): int
     {
@@ -23,8 +23,8 @@ class Categoria extends Dato implements JsonSerializable
 {
     use Identificable;
 
-    private string $nombre;
-    private array $personasPertenecientes;
+    private $nombre;
+    private $personasPertenecientes;
 
     public function __construct(int $id, string $nombre)
     {
@@ -63,11 +63,11 @@ class Persona extends Dato
 {
     use Identificable;
 
-    private string $nombre;
-    private string $apellidos;
+    private $nombre;
+    private $apellidos;
     // ...
-    private int $categoriaId;
-    private Categoria $categoria;
+    private $categoriaId;
+    private $categoria;
 
     public function obtenerCategoria(): Categoria
     {
