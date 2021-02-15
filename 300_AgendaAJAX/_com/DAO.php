@@ -86,10 +86,11 @@ class DAO
 
     public static function categoriaActualizar($id, $nombre)
     {
-        self::ejecutarActualizacion(
+        $idAutogenerado=self::ejecutarActualizacion(
             "UPDATE categoria SET nombre=? WHERE id=?",
             [$nombre, $id]
         );
+        return self::categoriaObtenerPorId($idAutogenerado);
     }
 
     public static function categoriaCrear(string $nombre)

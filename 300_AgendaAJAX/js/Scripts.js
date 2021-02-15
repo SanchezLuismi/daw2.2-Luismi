@@ -37,8 +37,7 @@ function cargaRequest(xml){
     for(var i=0;i<tamano;i++){
         var tr = document.createElement("tr");
         var td = document.createElement("td");
-        //var a = document.createElement("a");
-        //a.setAttribute("href","CategoriaFicha.php?id=" + objeto[i].id);
+        td.setAttribute('onclick',"modificarCategoria("+objeto[i].id+")");
         var textoContenido = document.createTextNode(objeto[i].nombre);
 
         var tdBorrado = document.createElement("td");
@@ -47,7 +46,7 @@ function cargaRequest(xml){
         boton.setAttribute("id", "btnBorrar"+objeto[i].id);
 
 // editButton.setAttribute('onClick', editSection('id'))
-        //boton.addEventListener('click', borrarCategoria(objeto[i]), true);
+        boton.setAttribute('onclick', "borrarCategoria("+objeto[i].id+")");
         boton.setAttribute("value", "X")
 
         //a.appendChild(textoContenido);
@@ -110,13 +109,12 @@ function insertarCategoriaPorPosicion(categoria) {
 
     var tr = document.createElement("tr");
     var td = document.createElement("td");
-   // var a = document.createElement("a");
-    //a.setAttribute("href","CategoriaFicha.php?id=" + categoria.id);
+    td.setAttribute('onclick',"modificarCategoria("+categoria.id+")");
     var textoContenido = document.createTextNode(categoria.nombre);
 
     var tdBorrado = document.createElement("td");
     var boton = document.createElement("button");
-    //boton.onclick=borrarCategoria(objeto[i]);
+    boton.setAttribute('onclick', "borrarCategoria("+categoria.id+")");
     var textoBorrado = document.createTextNode("X");
 
     td.appendChild(textoContenido);
@@ -128,48 +126,92 @@ function insertarCategoriaPorPosicion(categoria) {
     tr.appendChild(td);
     tr.appendChild(tdBorrado);
 
-    if(nodo){
-        container.insertBefore(tr, nodo);
+    //if(nodo){
+        //tablaCategorias.insertBefore(tr, nodo);
+        //tablaCategorias.appendChild(tr);
+    //}else{
         tablaCategorias.appendChild(tr);
-    }else{
-        tablaCategorias.appendChild(tr);
-    }
+    //}
 
 }
 
-function borrarCategoria(obj){
+function borrarCategoria(id){
 
     var req = new XMLHttpRequest();
 
     req.onreadystatechange = function(){
         if(this.readyState == 4 && this.status == 200){
 
-            borraCategoria(this.response,obj);
+            borraCategoria(this.response);
         }
 
     };
 
-    req.open("GET","CategoriaEliminar.php?id="+obj.id,true);
+    req.open("GET","CategoriaEliminar.php?id="+id,true);
     req.send();
 }
 
-function borraCategoria(xml,obj){
+function borraCategoria(xml){
 
     var respuesta = JSON.parse(xml);
-    var container = document.querySelector('#tablaCategorias');
-    var lista = container.querySelectorAll("tr td");
-    var nodo;
 
-   if(respuesta != null){
+    if(respuesta == 1){
+        tablaCategorias.innerHTML="<tr>\n" +
+            "        <th>Nombre</th>\n" +
+            "    </tr>";
+        cargarTodasLasCategorias();
+        alert("Categoria eliminada")
+    }else{
+        alert("Error")
+    }
 
-       for(var i=0;i<lista.length;i++){
-           if(lista[i].outerText == obj.nombre){
-               lista[i].parentNode.removeChild(lista[i]);
-           }
-       }
+}
 
-   }else{
-       alert("No se ha podido borrar")
-   }
+function modCategoria(id){
+
+    var div = document.getElementById("modificar");
+
+    var input = document.createElement("input");
+    input.setAttribute("id","input"+id);
+    var boton = document.createElement("button");
+    boton.setAttribute('onclick', "modificarCategoria("+id+")");
+
+    div.appendChild(input);
+    div.appendChild(boton);
+
+}
+
+function modificarCategoria(id){
+
+    var nombre = document.getElementById("input" + id).value;
+
+    var req = new XMLHttpRequest();
+
+    req.onreadystatechange = function(){
+        if(this.readyState == 4 && this.status == 200){
+
+            modificacionCategoria(this.response);
+        }
+
+    };
+
+    req.open("GET","CategoriaModificar.php?id="+id+"?nombre="+nombre,true);
+    req.send();
+
+}
+
+function modificacionCategoria(xml){
+
+    var respuesta = JSON.parse(xml);
+
+    if(respuesta == 1){
+        tablaCategorias.innerHTML="<tr>\n" +
+            "        <th>Nombre</th>\n" +
+            "    </tr>";
+        cargarTodasLasCategorias();
+        alert("Categoria modificada")
+    }else{
+        alert("Error")
+    }
 
 }
