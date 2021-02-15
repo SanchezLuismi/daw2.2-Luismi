@@ -12,7 +12,7 @@ class DAO
         $servidor = "localhost";
         $identificador = "root";
         $contrasenna = "";
-        $bd = "agenda"; // Schema
+        $bd = "agenda1"; // Schema
         $opciones = [
             PDO::ATTR_EMULATE_PREPARES => false, // Modo emulación desactivado para prepared statements "reales"
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Que los errores salgan como excepciones.
@@ -95,7 +95,7 @@ class DAO
     public static function categoriaCrear(string $nombre)
     {
         $idAutogenerado = self::ejecutarActualizacion(
-            "INSERT INTO Categoria (nombre) VALUES (?)",
+            "INSERT INTO categoria (nombre) VALUES (?)",
             [$nombre]
         );
 
@@ -105,7 +105,7 @@ class DAO
     public static function categoriaEliminar($id) : ?int
     {
        $rs = self::ejecutarBorrado(
-            "DELETE FROM Categoria WHERE id=?",
+            "DELETE FROM categoria WHERE id=?",
             [$id]
         );
        return $rs;

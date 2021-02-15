@@ -4,8 +4,8 @@ var tablaCategorias;
 
 function inicializaciones() {
     tablaCategorias = document.getElementById("tablaCategorias");
-    cargarTodasLasCategorias();
     document.getElementById("submitCrearCategoria").addEventListener("click",crearCategoria);
+    cargarTodasLasCategorias();
 }
 
 function cargarTodasLasCategorias() {
@@ -37,20 +37,23 @@ function cargaRequest(xml){
     for(var i=0;i<tamano;i++){
         var tr = document.createElement("tr");
         var td = document.createElement("td");
-        var a = document.createElement("a");
-        a.setAttribute("href","CategoriaFicha.php?id=" + objeto[i].id);
+        //var a = document.createElement("a");
+        //a.setAttribute("href","CategoriaFicha.php?id=" + objeto[i].id);
         var textoContenido = document.createTextNode(objeto[i].nombre);
 
         var tdBorrado = document.createElement("td");
-        var aBorrado = document.createElement("a");
-        aBorrado.setAttribute("href","CategoriaEliminar.php?id=" + objeto[i].id);
-        var textoBorrado = document.createTextNode("X");
+        var boton = document.createElement("input");
+        boton.setAttribute("type", "button");
+        boton.setAttribute("id", "btnBorrar"+objeto[i].id);
 
-        a.appendChild(textoContenido);
-        td.appendChild(a);
+// editButton.setAttribute('onClick', editSection('id'))
+        //boton.addEventListener('click', borrarCategoria(objeto[i]), true);
+        boton.setAttribute("value", "X")
 
-        aBorrado.appendChild(textoBorrado);
-        tdBorrado.appendChild(aBorrado);
+        //a.appendChild(textoContenido);
+        td.appendChild(textoContenido);
+
+        tdBorrado.appendChild(boton);
 
         tr.appendChild(td);
         tr.appendChild(tdBorrado);
@@ -81,15 +84,17 @@ function crearCategoria(){
 
 function cargaCategoria(xml){
     var obj = JSON.parse(xml);
-    insertarCategoriaPorPosicion(obj);
+    if(obj){
+        insertarCategoriaPorPosicion(obj);
+    }else{
+        alert("Error")
+    }
 }
 
 function insertarCategoriaPorPosicion(categoria) {
 
-    var container = document.querySelector('#tablaCategorias');
-    var p=0;
-    var lista = container.querySelectorAll("tr td");
-    var listaNombres=[];
+    //var container = document.querySelector('#tablaCategorias');
+    var lista = tablaCategorias.querySelectorAll("tr td");
     var nodo;
     var nombre = categoria.nombre.toLowerCase()
     var letraInicial = nombre.substr(0,1);
@@ -105,23 +110,66 @@ function insertarCategoriaPorPosicion(categoria) {
 
     var tr = document.createElement("tr");
     var td = document.createElement("td");
-    var a = document.createElement("a");
-    a.setAttribute("href","CategoriaFicha.php?id=" + categoria.id);
+   // var a = document.createElement("a");
+    //a.setAttribute("href","CategoriaFicha.php?id=" + categoria.id);
     var textoContenido = document.createTextNode(categoria.nombre);
 
     var tdBorrado = document.createElement("td");
-    var aBorrado = document.createElement("a");
-    aBorrado.setAttribute("href","CategoriaEliminar.php?id=" + categoria.id);
+    var boton = document.createElement("button");
+    //boton.onclick=borrarCategoria(objeto[i]);
     var textoBorrado = document.createTextNode("X");
 
-    a.appendChild(textoContenido);
-    td.appendChild(a);
+    td.appendChild(textoContenido);
+    //td.appendChild(a);
 
-    aBorrado.appendChild(textoBorrado);
-    tdBorrado.appendChild(aBorrado);
+    boton.appendChild(textoBorrado);
+    tdBorrado.appendChild(boton);
 
     tr.appendChild(td);
     tr.appendChild(tdBorrado);
-    tablaCategorias.insertBefore(tr,nodo);
+
+    if(nodo){
+        container.insertBefore(tr, nodo);
+        tablaCategorias.appendChild(tr);
+    }else{
+        tablaCategorias.appendChild(tr);
+    }
+
 }
 
+function borrarCategoria(obj){
+
+    var req = new XMLHttpRequest();
+
+    req.onreadystatechange = function(){
+        if(this.readyState == 4 && this.status == 200){
+
+            borraCategoria(this.response,obj);
+        }
+
+    };
+
+    req.open("GET","CategoriaEliminar.php?id="+obj.id,true);
+    req.send();
+}
+
+function borraCategoria(xml,obj){
+
+    var respuesta = JSON.parse(xml);
+    var container = document.querySelector('#tablaCategorias');
+    var lista = container.querySelectorAll("tr td");
+    var nodo;
+
+   if(respuesta != null){
+
+       for(var i=0;i<lista.length;i++){
+           if(lista[i].outerText == obj.nombre){
+               lista[i].parentNode.removeChild(lista[i]);
+           }
+       }
+
+   }else{
+       alert("No se ha podido borrar")
+   }
+
+}
