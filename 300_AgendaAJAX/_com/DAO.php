@@ -12,7 +12,7 @@ class DAO
         $servidor = "localhost";
         $identificador = "root";
         $contrasenna = "";
-        $bd = "Agenda"; // Schema
+        $bd = "agenda1"; // Schema
         $opciones = [
             PDO::ATTR_EMULATE_PREPARES => false, // Modo emulación desactivado para prepared statements "reales"
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Que los errores salgan como excepciones.
@@ -93,7 +93,7 @@ class DAO
     public static function categoriaObtenerPorId(int $id): ?Categoria
     {
         $rs = self::ejecutarConsulta(
-            "SELECT * FROM Categoria WHERE id=?",
+            "SELECT * FROM categoria WHERE id=?",
             [$id]
         );
 
@@ -106,7 +106,7 @@ class DAO
         $datos = [];
 
         $rs = self::ejecutarConsulta(
-            "SELECT * FROM Categoria ORDER BY nombre",
+            "SELECT * FROM categoria ORDER BY nombre",
             []
         );
 
@@ -121,7 +121,7 @@ class DAO
     public static function categoriaCrear(string $nombre): ?Categoria
     {
         $idAutogenerado = self::ejecutarInsert(
-            "INSERT INTO Categoria (nombre) VALUES (?)",
+            "INSERT INTO categoria (nombre) VALUES (?)",
             [$nombre]
         );
 
@@ -132,7 +132,7 @@ class DAO
     public static function categoriaActualizar(Categoria $categoria): ?Categoria
     {
         $filasAfectadas = self::ejecutarUpdate(
-            "UPDATE Categoria SET nombre=? WHERE id=?",
+            "UPDATE categoria SET nombre=? WHERE id=?",
             [$categoria->getNombre(), $categoria->getId()]
         );
 
@@ -143,7 +143,7 @@ class DAO
     public static function categoriaEliminarPorId(int $id): bool
     {
         $filasAfectadas = self::ejecutarUpdate(
-            "DELETE FROM Categoria WHERE id=?",
+            "DELETE FROM categoria WHERE id=?",
             [$id]
         );
 

@@ -1,6 +1,6 @@
 <?php
 	require_once "_com/DAO.php";
 
-    $respuesta = DAO::categoriaEliminar($_REQUEST["id"]);
+$resultado = DAO::categoriaEliminarPorId($_REQUEST["id"]);
 
-    echo json_encode($respuesta);
+echo json_encode($resultado);
