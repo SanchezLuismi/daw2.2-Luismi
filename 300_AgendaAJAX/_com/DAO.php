@@ -12,7 +12,7 @@ class DAO
         $servidor = "localhost";
         $identificador = "root";
         $contrasenna = "";
-        $bd = "agenda1"; // Schema
+        $bd = "Agenda"; // Schema
         $opciones = [
             PDO::ATTR_EMULATE_PREPARES => false, // Modo emulación desactivado para prepared statements "reales"
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Que los errores salgan como excepciones.
@@ -42,29 +42,45 @@ class DAO
 
     // Devuelve:
     //   - null: si ha habido un error
-    //   - 0, 1 u otro número positivo: OK (no errores) y estas son las filas afectadas.
-    private static function ejecutarActualizacion(string $sql, array $parametros): ?int
+    //   - int: el id autogenerado para el nuevo registro.
+    private static function ejecutarInsert(string $sql, array $parametros): ?int
     {
         if (!isset(self::$pdo)) self::$pdo = self::obtenerPdoConexionBd();
 
-        $actualizacion = self::$pdo->prepare($sql);
-        $sqlConExito = $actualizacion->execute($parametros);
+        $insert = self::$pdo->prepare($sql);
+        $sqlConExito = $insert->execute($parametros);
 
         if (!$sqlConExito) return null;
         else return self::$pdo->lastInsertId();
     }
 
-    private static function ejecutarBorrado(string $sql, array $parametros): ?int
+    // Devuelve:
+    //   - null: si ha habido un error
+    //   - 0, 1 u otro número positivo: OK (no errores) y estas son las filas afectadas.
+    private static function ejecutarUpdate(string $sql, array $parametros): ?int
     {
         if (!isset(self::$pdo)) self::$pdo = self::obtenerPdoConexionBd();
 
-        $actualizacion = self::$pdo->prepare($sql);
-        $sqlConExito = $actualizacion->execute($parametros);
+        $update = self::$pdo->prepare($sql);
+        $sqlConExito = $update->execute($parametros);
 
         if (!$sqlConExito) return null;
-        else return 1;
+        else return $update->rowCount();
     }
 
+    // Devuelve:
+    //   - null: si ha habido un error
+    //   - 0, 1 o más: OK (no errores) y estas son las filas afectadas.
+    private static function ejecutarDelete(string $sql, array $parametros): ?int
+    {
+        if (!isset(self::$pdo)) self::$pdo = self::obtenerPdoConexionBd();
+
+        $delete = self::$pdo->prepare($sql);
+        $sqlConExito = $delete->execute($parametros);
+
+        if (!$sqlConExito) return null;
+        else return $delete->rowCount();
+    }
 
 
     /* CATEGORÍA */
@@ -77,39 +93,12 @@ class DAO
     public static function categoriaObtenerPorId(int $id): ?Categoria
     {
         $rs = self::ejecutarConsulta(
-            "SELECT * FROM categoria WHERE id=?",
+            "SELECT * FROM Categoria WHERE id=?",
             [$id]
         );
+
         if ($rs) return self::categoriaCrearDesdeRs($rs[0]);
         else return null;
-    }
-
-    public static function categoriaActualizar($id, $nombre)
-    {
-        $idAutogenerado=self::ejecutarActualizacion(
-            "UPDATE categoria SET nombre=? WHERE id=?",
-            [$nombre, $id]
-        );
-        return self::categoriaObtenerPorId($idAutogenerado);
-    }
-
-    public static function categoriaCrear(string $nombre)
-    {
-        $idAutogenerado = self::ejecutarActualizacion(
-            "INSERT INTO categoria (nombre) VALUES (?)",
-            [$nombre]
-        );
-
-        return self::categoriaObtenerPorId($idAutogenerado);
-    }
-
-    public static function categoriaEliminar($id) : ?int
-    {
-       $rs = self::ejecutarBorrado(
-            "DELETE FROM categoria WHERE id=?",
-            [$id]
-        );
-       return $rs;
     }
 
     public static function categoriaObtenerTodas(): array
@@ -117,7 +106,7 @@ class DAO
         $datos = [];
 
         $rs = self::ejecutarConsulta(
-            "SELECT * FROM categoria ORDER BY nombre",
+            "SELECT * FROM Categoria ORDER BY nombre",
             []
         );
 
@@ -129,25 +118,40 @@ class DAO
         return $datos;
     }
 
-    private static function personaCrearDesdeRs(array $fila): Categoria
+    public static function categoriaCrear(string $nombre): ?Categoria
     {
-        return new Persona($fila["id"], $fila["nombre"],$fila["telefono"],$fila["categoria_id"]);
+        $idAutogenerado = self::ejecutarInsert(
+            "INSERT INTO Categoria (nombre) VALUES (?)",
+            [$nombre]
+        );
+
+        if ($idAutogenerado == null) return null;
+        else return self::categoriaObtenerPorId($idAutogenerado);
     }
 
-    public static function personasCategoriaObtener(int $id): array
+    public static function categoriaActualizar(Categoria $categoria): ?Categoria
     {
-        $datos = [];
+        $filasAfectadas = self::ejecutarUpdate(
+            "UPDATE Categoria SET nombre=? WHERE id=?",
+            [$categoria->getNombre(), $categoria->getId()]
+        );
 
-        $rs = self::ejecutarConsulta(
-            "SELECT * FROM persona where categoria_id = (SELECT id FROM categoria where id=?) ORDER BY nombre",
+        if ($filasAfectadas = null) return null;
+        else return $categoria;
+    }
+
+    public static function categoriaEliminarPorId(int $id): bool
+    {
+        $filasAfectadas = self::ejecutarUpdate(
+            "DELETE FROM Categoria WHERE id=?",
             [$id]
         );
 
-        foreach ($rs as $fila) {
-            $categoria = self::personaCrearDesdeRs($fila);
-            array_push($datos, $categoria);
-        }
+        return ($filasAfectadas == 1);
+    }
 
-        return $datos;
+    public static function categoriaEliminar(Categoria $categoria): bool
+    {
+        return self::categoriaEliminarPorId($categoria->id);
     }
 }
