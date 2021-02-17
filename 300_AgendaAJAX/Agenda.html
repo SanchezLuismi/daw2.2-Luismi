@@ -2,23 +2,15 @@
 
 <head>
     <meta charset='UTF-8' />
-    <script src='js/Scripts.js'> </script>
+    <link rel="stylesheet" href="css/Estilos.css">
+    <script src='js/Scripts.js'></script>
 </head>
 
 <body>
 
 <h1>Súper Agenda FX</h1>
 
-<h2 id='pantalla'>Categorías</h2>
-
-<div id='crearCat'>
-
-    <p>Nombre: <input type='text' id='nombre' placeholder="Nombre" value='' /></p>
-    <button id='submitCrearCategoria'>Crear Categoria</button>
-
-</div>
-
-<br />
+<h2>Categorías</h2>
 
 <div id="categoriasTabla">
     <div id='categoriasCabecera'>
@@ -31,8 +23,20 @@
     </div>
 </div>
 
-<div id='modificar'>
-</div>
+
+
+<br>
+
+
+
+<input type='text' id='categoriaNombre' placeholder='<nombre de la categoría>' value='' />
+<button id='btnCategoriaCrear'>Crear</button>
+
+<br><br>
+
+<button onclick='debug();'>Debug</button>
+
+
 </body>
 
 </html>
