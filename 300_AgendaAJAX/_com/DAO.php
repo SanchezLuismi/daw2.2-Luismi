@@ -12,7 +12,7 @@ class DAO
         $servidor = "localhost";
         $identificador = "root";
         $contrasenna = "";
-        $bd = "agenda1"; // Schema
+        $bd = "Agenda"; // Schema
         $opciones = [
             PDO::ATTR_EMULATE_PREPARES => false, // Modo emulación desactivado para prepared statements "reales"
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Que los errores salgan como excepciones.
@@ -93,7 +93,7 @@ class DAO
     public static function categoriaObtenerPorId(int $id): ?Categoria
     {
         $rs = self::ejecutarConsulta(
-            "SELECT * FROM categoria WHERE id=?",
+            "SELECT * FROM Categoria WHERE id=?",
             [$id]
         );
 
@@ -106,7 +106,7 @@ class DAO
         $datos = [];
 
         $rs = self::ejecutarConsulta(
-            "SELECT * FROM categoria ORDER BY nombre",
+            "SELECT * FROM Categoria ORDER BY nombre",
             []
         );
 
@@ -121,7 +121,7 @@ class DAO
     public static function categoriaCrear(string $nombre): ?Categoria
     {
         $idAutogenerado = self::ejecutarInsert(
-            "INSERT INTO categoria (nombre) VALUES (?)",
+            "INSERT INTO Categoria (nombre) VALUES (?)",
             [$nombre]
         );
 
@@ -132,7 +132,7 @@ class DAO
     public static function categoriaActualizar(Categoria $categoria): ?Categoria
     {
         $filasAfectadas = self::ejecutarUpdate(
-            "UPDATE categoria SET nombre=? WHERE id=?",
+            "UPDATE Categoria SET nombre=? WHERE id=?",
             [$categoria->getNombre(), $categoria->getId()]
         );
 
@@ -143,7 +143,7 @@ class DAO
     public static function categoriaEliminarPorId(int $id): bool
     {
         $filasAfectadas = self::ejecutarUpdate(
-            "DELETE FROM categoria WHERE id=?",
+            "DELETE FROM Categoria WHERE id=?",
             [$id]
         );
 
@@ -154,4 +154,80 @@ class DAO
     {
         return self::categoriaEliminarPorId($categoria->id);
     }
+
+    /*PERSONA*/
+    private static function personaCrearDesdeRs(array $fila): Persona
+    {
+        return new Persona($fila["id"], $fila["nombre"],$fila["apellidos"],
+            $fila["telefono"],$fila["estrella"],$fila["categoriaId"]);
+    }
+
+    public static function personaObtenerPorId(int $id): ?Persona
+    {
+        $rs = self::ejecutarConsulta(
+            "SELECT * FROM Persona WHERE id=?",
+            [$id]
+        );
+
+        if ($rs) return self::personaCrearDesdeRs($rs[0]);
+        else return null;
+    }
+
+    public static function personaObtenerTodas(): array
+    {
+        $datos = [];
+
+        $rs = self::ejecutarConsulta(
+            "SELECT * FROM Persona ORDER BY nombre",
+            []
+        );
+
+        foreach ($rs as $fila) {
+            $persona = self::personaCrearDesdeRs($fila);
+            array_push($datos, $persona);
+        }
+
+        return $datos;
+    }
+
+    public static function personaCrear(string $nombre,string $apellidos, string $telefono,int $estrella,int $categoriaId): ?Persona
+    {
+        $idAutogenerado = self::ejecutarInsert(
+            "INSERT INTO Persona (nombre) VALUES (?,?,?,?,?)",
+            [$nombre,$apellidos,$telefono,$estrella,$categoriaId]
+        );
+
+        if ($idAutogenerado == null) return null;
+        else return self::personaObtenerPorId($idAutogenerado);
+    }
+
+    public static function personaActualizar(Persona $persona): ?Persona
+    {
+        $filasAfectadas = self::ejecutarUpdate(
+            "UPDATE Persona SET nombre=?,apellidos=?,telefono=?,estrella=?,categoriaId=? WHERE id=?",
+            [$persona->getNombre(),$persona->getApellidos(),$persona->getTelefono(),
+                $persona->getEstrella(),$persona->getCategoriaId(), $persona->getId()]
+        );
+
+        if ($filasAfectadas = null) return null;
+        else return $persona;
+    }
+
+    public static function personaEliminarPorId(int $id): bool
+    {
+        $filasAfectadas = self::ejecutarUpdate(
+            "DELETE FROM Persona WHERE id=?",
+            [$id]
+        );
+
+        return ($filasAfectadas == 1);
+    }
+
+    public static function personaEliminar(Persona $persona): bool
+    {
+        return self::personaEliminarPorId($persona->id);
+    }
 }
+
+
+

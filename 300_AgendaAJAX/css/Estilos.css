@@ -16,7 +16,31 @@
     padding: 1px;
 }
 
-#categoriasTabla > div > div > div > input {
+#personasTabla > div > div > div > input {
+    width: 100%;
+    border: none;
+}
+
+#personasTabla > div {
+    display: table;
+    width: 250px;
+}
+
+#personasTabla > div > div {
+    display: table-row;
+    width: 100%;
+}
+
+#personasTabla > div > div > div {
+    display: table-cell;
+    text-align: center;
+    border: 1px solid silver;
+    height: 25%;
+    width: 15%;
+    padding: 1px;
+}
+
+#personaTabla > div > div > div > input {
     width: 100%;
     border: none;
 }

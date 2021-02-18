@@ -63,20 +63,94 @@ class Categoria extends Dato implements JsonSerializable
     }
 }
 
-class Persona extends Dato
+class Persona extends Dato implements JsonSerializable
 {
     use Identificable;
 
     private string $nombre;
-    private string $apellidos;
-    // ...
+    private string $apellido;
+    private string $telefono;
+    private int $estrella;
     private int $categoriaId;
-    private Categoria $categoria;
+
+    public function __construct(int $id,string $nombre, string $apellido, string $telefono, int $estrella, int $categoriaId)
+    {
+        $this->setId($id);
+        $this->setNombre($nombre);
+        $this->setApellido($apellido);
+        $this->setTelefono($telefono);
+        $this->setEstrella($estrella);
+        $this->setCategoriaId($categoriaId);
+    }
+
+
+    public function getNombre(): string
+    {
+        return $this->nombre;
+    }
+
+    public function setNombre(string $nombre): void
+    {
+        $this->nombre = $nombre;
+    }
+
+    public function getApellido(): string
+    {
+        return $this->apellido;
+    }
+
+    public function setApellido(string $apellido): void
+    {
+        $this->apellido = $apellido;
+    }
+
+    public function getTelefono(): string
+    {
+        return $this->telefono;
+    }
+
+    public function setTelefono(string $telefono): void
+    {
+        $this->telefono = $telefono;
+    }
+
+    public function getEstrella(): int
+    {
+        return $this->estrella;
+    }
+
+    public function setEstrella(int $estrella): void
+    {
+        $this->estrella = $estrella;
+    }
+
+    public function getCategoriaId(): int
+    {
+        return $this->categoriaId;
+    }
+
+    public function setCategoriaId(int $categoriaId): void
+    {
+        $this->categoriaId = $categoriaId;
+    }
 
     public function obtenerCategoria(): Categoria
     {
         if ($this->categoria == null) $categoria = DAO::categoriaObtenerPorId($this->categoriaId);
 
         return $categoria;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            "nombre" => $this->nombre,
+            "apellido" => $this->apellido,
+            "telefono" => $this->telefono,
+            "estrella" => $this->estrella,
+            "categoriaId" => $this->categoriaId,
+            "id" => $this->id,
+
+        ];
     }
 }
