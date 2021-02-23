@@ -205,7 +205,7 @@ class DAO
     {
         $filasAfectadas = self::ejecutarUpdate(
             "UPDATE Persona SET nombre=?,apellidos=?,telefono=?,estrella=?,categoriaId=? WHERE id=?",
-            [$persona->getNombre(),$persona->getApellidos(),$persona->getTelefono(),
+            [$persona->getNombre(),$persona->getApellido(),$persona->getTelefono(),
                 $persona->getEstrella(),$persona->getCategoriaId(), $persona->getId()]
         );
 

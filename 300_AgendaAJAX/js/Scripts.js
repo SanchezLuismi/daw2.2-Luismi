@@ -3,6 +3,11 @@ window.onload = inicializar;
 var divCategoriasDatos;
 var divPersonaDatos;
 var inputCategoriaNombre;
+var inputPersonaNombre;
+var inputPersonaApellido;
+var inputPersonaTelefono;
+var inputPersonaCategoria;
+var inputPersonaEstrella;
 
 
 
@@ -48,6 +53,11 @@ function inicializar() {
     divCategoriasDatos = document.getElementById("categoriasDatos");
     divPersonaDatos = document.getElementById("personasDatos");
     inputCategoriaNombre = document.getElementById("categoriaNombre");
+    inputPersonaNombre = document.getElementById("personaNombre");
+    inputPersonaApellido =document.getElementById("personaApellido");
+    inputPersonaTelefono = document.getElementById("personaTelefono");
+    inputPersonaCategoria = document.getElementById("personaCategoria");
+    inputPersonaEstrella = document.getElementById("personaEstrella");
 
     document.getElementById('btnCategoriaCrear').addEventListener('click', clickCategoriaCrear);
     document.getElementById('btnPersonasCrear').addEventListener('click', clickPersonaCrear);
@@ -124,6 +134,109 @@ function clickCategoriaEliminar(id) {
         function(texto) {
             var categoria = JSON.parse(texto);
             domCategoriaEliminar(id);
+        },
+        function(texto) {
+            alert("Error Ajax al eliminar: " + texto);
+        }
+    );
+}
+
+function clickPersonaCrear() {
+    inputPersonaNombre.disabled = true;
+    inputPersonaApellido.disabled = true;
+    inputPersonaCategoria.disabled = true;
+    inputPersonaTelefono.disabled = true;
+    inputPersonaEstrella.disabled = true;
+
+
+    var id=-1;
+
+    var estrella=0;
+    if(inputPersonaEstrella.checked() == true){
+        estrella = 1;
+    }
+
+    let persona = { "id":  id, "nombre": inputPersonaNombre.value,"apellido": inputPersonaApellido.value,
+        "telefono": inputPersonaTelefono.value,"categoria": inputPersonaCategoria.value,"estrella": estrella};
+
+    // TODO Pasar un objeto JSON stringifizado, con id=-1 o algo así.
+    llamadaAjax("PersonaCrear.php", objetoAParametrosParaRequest(persona),
+        function(texto) {
+            // Se re-crean los datos por si han modificado/normalizado algún valor en el servidor.
+            var persona = JSON.parse(texto);
+
+            // Se fuerza la ordenación, ya que este elemento podría no quedar ordenado si se pone al final.
+            domPersonaInsertar(categoria, true);
+
+            inputPersonaNombre.value = "";
+            inputPersonaNombre.disabled = false;
+
+            inputPersonaApellido.value = "";
+            inputPersonaApellido.disabled = false;
+
+            inputPersonaTelefono.value = "";
+            inputPersonaTelefono.disabled = false;
+
+            inputPersonaCategoria.value = "";
+            inputPersonaCategoria.disabled = false;
+
+            inputPersonaEstrella.value = "";
+            inputPersonaEstrella.disabled = false;
+        },
+        function(texto) {
+            alert("Error Ajax al crear: " + texto);
+            inputPersonaNombre.disabled = false;
+            inputPersonaApellido.disabled = false;
+            inputPersonaTelefono.disabled = false;
+            inputPersonaCategoria.disabled = false;
+            inputPersonaEstrella.disabled = false;
+        }
+    );
+}
+
+function blurPersonaModificar(input) {
+    let divPersona = input.parentElement.parentElement;
+    let id = extraerId(divPersona.id);
+    let divEstrella = divPersona.children[0];
+    let inputEstrella = divEstrella.children[0];
+
+    let divNombre = divPersona.children[1];
+    let inputNombre = divNombre.children[0];
+
+    let divApellido = divPersona.children[2];
+    let inputApellido = divApellido.children[0];
+
+    let divTelefono = divPersona.children[3];
+    let inputTelefono = divTelefono.children[0];
+
+    let divCategoria = divPersona.children[4];
+    let inputCategoria = divCategoria.children[0];
+
+
+    let personaMod = { "id":  id, "nombre": inputNombre.value,"apellido": inputApellido.value,
+        "telefono": inputTelefono.value,"categoria": inputCategoria.value,"estrella": inputEstrella.value};
+
+    llamadaAjax("PersonaModificar.php", objetoAParametrosParaRequest(personaMod),
+        function(texto) {
+            if (texto != "null") {
+                // Se re-crean los datos por si han modificado/normalizado algún valor en el servidor.
+                persona = JSON.parse(texto);
+                domPersonaModificar(persona);
+            } else {
+                alert("Error Ajax al modificar: " + texto);
+            }
+        },
+        function(texto) {
+            alert("Error Ajax al modificar: " + texto);
+        }
+    );
+}
+
+function clickPersonaEliminar(id) {
+    llamadaAjax("PersonaEliminar.php", "id="+id,
+        function(texto) {
+            var categoria = JSON.parse(texto);
+            domPersonaEliminar(id);
         },
         function(texto) {
             alert("Error Ajax al eliminar: " + texto);
@@ -263,7 +376,7 @@ function domPersonaCrearDiv(persona){
 
     let eliminarImg = document.createElement("img");
     eliminarImg.setAttribute("src", "img/Eliminar.png");
-    eliminarImg.setAttribute("onclick", "clickCategoriaEliminar(" + persona.id + "); return false;");
+    eliminarImg.setAttribute("onclick", "clickPersonaEliminar(" + persona.id + "); return false;");
     let eliminarDiv = document.createElement("div");
     eliminarDiv.appendChild(eliminarImg);
 
@@ -282,6 +395,29 @@ function domPersonaCrearDiv(persona){
 function domPersonaObtenerDiv(pos) {
     let div = divPersonaDatos.children[pos];
     return div;
+}
+
+function domPersonaObtenerObjeto(pos) {
+    let divPersona = domPersonaObtenerDiv(pos);
+
+    let divEstrella = divPersona.children[0];
+    let inputEstrella = divEstrella.children[0];
+
+    let divNombre = divPersona.children[1];
+    let inputNombre = divNombre.children[0];
+
+    let divApellido = divPersona.children[2];
+    let inputApellido = divApellido.children[0];
+
+    let divTelefono = divPersona.children[3];
+    let inputTelefono = divTelefono.children[0];
+
+    let divCategoria = divPersona.children[4];
+    let inputCategoria = divCategoria.children[0];
+
+
+    return { "id":  extraerId(divCategoria.id), "nombre": inputNombre.value, "apellido": inputApellido.value,
+        "telefono": inputTelefono.value,"categoria": inputCategoria.value,"estrella": inputEstrella.value}; // Devolvemos un objeto recién creado con los datos que hemos obtenido.
 }
 
 function domPersonaEjecutarInsercion(pos, persona) {
