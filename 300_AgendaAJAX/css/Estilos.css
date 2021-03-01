@@ -1,4 +1,4 @@
-#categoriasTabla > div {
+/*#categoriasTabla > div {
     display: table;
     width: 250px;
 }
@@ -41,6 +41,53 @@
 }
 
 #personaTabla > div > div > div > input {
+    width: 100%;
+    border: none;
+}*/
+#personasTabla > div {
+    display: table;
+    width: 90%;
+}
+
+#personasTabla > div > div {
+    display: table-row;
+    width: 100%;
+}
+
+#personasTabla > div > div > div {
+    display: table-cell;
+    text-align: center;
+    border: 1px solid silver;
+    width: 16.67%;
+    padding: 1px;
+}
+
+#personasTabla > div > div > div > input {
+    width: 100%;
+    border: none;
+}
+
+
+
+#categoriasTabla > div {
+    display: table;
+    width: 40%;
+}
+
+#categoriasTabla > div > div {
+    display: table-row;
+    width: 100%;
+}
+
+#categoriasTabla > div > div > div {
+    display: table-cell;
+    text-align: center;
+    border: 1px solid silver;
+    width: 50%;
+    padding: 1px;
+}
+
+#categoriasTabla > div > div > div > input {
     width: 100%;
     border: none;
 }
