@@ -433,7 +433,10 @@ function domPersonaInsertar(personaNueva, enOrden=false) {
         for (let pos = 0; pos < divPersonaDatos.children.length; pos++) {
             let personaActual = domPersonaObtenerObjeto(pos);
 
-            if (personaNueva.nombre.localeCompare(personaActual.nombre) == -1) {
+            let cadenaActual = personaActual.nombre + personaActual.apellidos;
+            let cadenaNueva = personaNueva.nombre + personaNueva.apellidos;
+
+            if (cadenaNueva.localeCompare(cadenaActual) == -1) {
                 // Si la categoría nueva va ANTES que la actual, este es el punto en el que insertarla.
                 domPersonaEjecutarInsercion(pos, personaNueva);
                 return;
